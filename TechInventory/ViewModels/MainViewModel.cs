@@ -1,0 +1,152 @@
+﻿using Inventory.Core;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using TechInventory.Helpers;
+using TechInventory.Views;
+
+namespace TechInventory.ViewModels
+{
+    public class MainViewModel : ViewModelBase
+    {
+        private readonly AppServices _services;
+        private RoomNodeViewModel? _selectedRoom;
+        private bool _isLoading;
+        private Dictionary<int, string> _deviceStatuses = new();
+        private HashSet<int> _deviceIdsWithOpenTickets = new();
+        private Dictionary<int, string> _userNames = new();   // для быстрого получения имени ответственного
+
+        public ObservableCollection<TreeNodeViewModel> Buildings { get; } = new();
+        public ObservableCollection<DeviceTileViewModel> Devices { get; } = new();
+
+        public RoomNodeViewModel? SelectedRoom
+        {
+            get => _selectedRoom;
+            set
+            {
+                if (SetProperty(ref _selectedRoom, value))
+                    _ = LoadDevicesForSelectedRoomAsync();
+            }
+        }
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => SetProperty(ref _isLoading, value);
+        }
+
+        public ICommand OpenDeviceCommand { get; }
+
+        public MainViewModel(AppServices services)
+        {
+            _services = services;
+            OpenDeviceCommand = new RelayCommand(OpenDevice);
+            _ = InitializeDataAsync();
+        }
+
+        private async Task InitializeDataAsync()
+        {
+            IsLoading = true;
+            try
+            {
+                // Загружаем статусы устройств
+                var statuses = await _services.DictionaryRepository.GetByCategoryAsync("DeviceStatus");
+                _deviceStatuses = statuses.ToDictionary(s => s.ID, s => s.Value);
+
+                // Получаем ID устройств с незакрытыми заявками
+                var openTicketsDevices = await _services.DeviceRepository.GetDevicesWithOpenTicketsAsync();
+                _deviceIdsWithOpenTickets = new HashSet<int>(openTicketsDevices.Select(d => d.DeviceID));
+
+                // Загружаем имена пользователей
+                var users = await _services.UserRepository.GetAllAsync();
+                _userNames = users.ToDictionary(u => u.UserID, u => u.FullName ?? u.Login);
+
+                // Строим дерево кабинетов
+                var rooms = await _services.RoomRepository.GetAllAsync();
+                var buildingGroups = rooms
+                    .GroupBy(r => r.Building)
+                    .OrderBy(g => g.Key);
+
+                foreach (var buildingGroup in buildingGroups)
+                {
+                    var buildingNode = new BuildingNodeViewModel($"Корпус {buildingGroup.Key}", buildingGroup.Key);
+                    var floorGroups = buildingGroup
+                        .GroupBy(r => r.Floor)
+                        .OrderBy(g => g.Key);
+
+                    foreach (var floorGroup in floorGroups)
+                    {
+                        var floorNode = new FloorNodeViewModel($"Этаж {floorGroup.Key}", floorGroup.Key);
+                        foreach (var room in floorGroup.OrderBy(r => r.Name))
+                        {
+                            var roomNode = new RoomNodeViewModel($"Кабинет {room.Name}", room.RoomID);
+                            floorNode.Children.Add(roomNode);
+                        }
+                        buildingNode.Children.Add(floorNode);
+                    }
+                    Buildings.Add(buildingNode);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Ошибка инициализации: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task LoadDevicesForSelectedRoomAsync()
+        {
+            if (SelectedRoom == null)
+            {
+                Devices.Clear();
+                return;
+            }
+
+            try
+            {
+                var devices = await _services.DeviceService.GetDevicesByRoomAsync(SelectedRoom.RoomID);
+                Devices.Clear();
+                foreach (var device in devices.OrderBy(d => d.PositionInRoom ?? 0))
+                {
+                    string statusName = _deviceStatuses.TryGetValue(device.StatusID, out var name) ? name : "?";
+                    bool hasOpenTicket = _deviceIdsWithOpenTickets.Contains(device.DeviceID);
+
+                    string assignedTo = "";
+                    if (device.AssignedToUserID.HasValue)
+                        _userNames.TryGetValue(device.AssignedToUserID.Value, out assignedTo);
+
+                    Devices.Add(new DeviceTileViewModel
+                    {
+                        DeviceID = device.DeviceID,
+                        Name = device.Name,
+                        StatusName = statusName,
+                        HasOpenTickets = hasOpenTicket,
+                        AssignedTo = assignedTo ?? ""
+                    });
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки устройств: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenDevice(object? parameter)
+        {
+            if (parameter is DeviceTileViewModel deviceTile)
+            {
+                var cardWindow = new DeviceCardWindow(_services, deviceTile.DeviceID);
+                cardWindow.Owner = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                cardWindow.ShowDialog();
+            }
+        }
+    }
+}

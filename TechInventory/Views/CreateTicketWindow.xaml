@@ -1,0 +1,39 @@
+﻿<Window x:Class="TechInventory.Views.CreateTicketWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Создать заявку"
+        Height="300" Width="450"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Устройство:" Margin="0,5"/>
+        <TextBlock Grid.Row="0" x:Name="DeviceNameText" HorizontalAlignment="Right" FontWeight="Bold"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
+            <TextBlock Text="Приоритет:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox x:Name="PriorityCombo" Width="120">
+                <ComboBoxItem Content="Высокий" Tag="1"/>
+                <ComboBoxItem Content="Средний" Tag="2" IsSelected="True"/>
+                <ComboBoxItem Content="Низкий" Tag="3"/>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,10,0,0">
+            <TextBlock Text="Описание:"/>
+            <TextBox x:Name="DescriptionTextBox" TextWrapping="Wrap" 
+                     AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Создать" Click="CreateButton_Click" Width="80" Margin="0,0,10,0"/>
+            <Button Content="Отмена" Click="CancelButton_Click" Width="80"/>
+        </StackPanel>
+    </Grid>
+</Window>

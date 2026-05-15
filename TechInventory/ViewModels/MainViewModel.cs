@@ -22,7 +22,25 @@ namespace TechInventory.ViewModels
 
         public ObservableCollection<TreeNodeViewModel> Buildings { get; } = new();
         public ObservableCollection<DeviceTileViewModel> Devices { get; } = new();
+        private string _searchText = "";
+        public string SearchText
+        {
+            get => _searchText;
+            set { SetProperty(ref _searchText, value); ApplyDeviceFilter(); }
+        }
 
+        private List<DeviceTileViewModel> _allDeviceTiles = new();
+
+        private void ApplyDeviceFilter()
+        {
+            Devices.Clear();
+            foreach (var tile in _allDeviceTiles.Where(d =>
+                string.IsNullOrEmpty(SearchText) ||
+                d.Name.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                Devices.Add(tile);
+            }
+        }
         public RoomNodeViewModel? SelectedRoom
         {
             get => _selectedRoom;
@@ -101,6 +119,7 @@ namespace TechInventory.ViewModels
         {
             if (SelectedRoom == null)
             {
+                _allDeviceTiles.Clear();
                 Devices.Clear();
                 return;
             }
@@ -108,6 +127,7 @@ namespace TechInventory.ViewModels
             try
             {
                 var devices = await _services.DeviceService.GetDevicesByRoomAsync(SelectedRoom.RoomID);
+                _allDeviceTiles.Clear();
                 Devices.Clear();
                 foreach (var device in devices.OrderBy(d => d.PositionInRoom ?? 0))
                 {
@@ -135,6 +155,8 @@ namespace TechInventory.ViewModels
                         AssignedTo = assignedTo ?? "",
                         Icon = icon
                     });
+                    _allDeviceTiles = Devices.ToList(); 
+                    ApplyDeviceFilter(); 
                 }
             }
             catch (System.Exception ex)

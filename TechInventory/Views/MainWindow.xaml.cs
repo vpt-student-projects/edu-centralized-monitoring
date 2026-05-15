@@ -43,7 +43,7 @@ namespace TechInventory.Views
 
         private void TicketsButton_Click(object sender, RoutedEventArgs e)
         {
-            var ticketsWindow = new TicketsWindow(_services);
+            var ticketsWindow = new TicketsWindow(_services, MainWindow.CurrentUser);
             ticketsWindow.Owner = this;
             ticketsWindow.ShowDialog();
         }

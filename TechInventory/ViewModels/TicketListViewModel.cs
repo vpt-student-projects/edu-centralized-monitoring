@@ -1,4 +1,5 @@
 ﻿using Inventory.Core;
+using Inventory.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,7 +14,14 @@ namespace TechInventory.ViewModels
     public class TicketListViewModel : ViewModelBase
     {
         private readonly AppServices _services;
-
+        private readonly User? _currentUser;
+        public bool IsTeacher => _currentUser?.Role == "Teacher";
+        private bool _onlyMyDevices;
+        public bool OnlyMyDevices
+        {
+            get => _onlyMyDevices;
+            set { SetProperty(ref _onlyMyDevices, value); ApplyFilters(); }
+        }
         public ObservableCollection<TicketListItem> Tickets { get; } = new();
         public ObservableCollection<string> PriorityOptions { get; } = new() { "Все", "Высокий", "Средний", "Низкий" };
         public ObservableCollection<string> StatusOptions { get; } = new() { "Все", "Новая", "В работе", "Завершена" };
@@ -52,9 +60,10 @@ namespace TechInventory.ViewModels
         public ICommand RefreshCommand { get; }
         public ICommand CloseTicketCommand { get; }
 
-        public TicketListViewModel(AppServices services)
+        public TicketListViewModel(AppServices services, User? currentUser = null)
         {
             _services = services;
+            _currentUser = currentUser;
             RefreshCommand = new RelayCommand(async _ => await LoadTicketsAsync());
             CloseTicketCommand = new RelayCommand(async _ => await CloseSelectedTicket(), _ => SelectedTicket != null);
             _ = LoadTicketsAsync();
@@ -109,7 +118,6 @@ namespace TechInventory.ViewModels
                     _allTickets.Add(item);
                 }
 
-                // Загрузка комнат для фильтра
                 var rooms = await _services.RoomRepository.GetAllAsync();
                 RoomOptions.Clear();
                 RoomOptions.Add(new RoomFilterItem { RoomID = 0, DisplayName = "Все" });

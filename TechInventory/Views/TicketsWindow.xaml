@@ -23,9 +23,13 @@
             
             <Button Content="Обновить" Command="{Binding RefreshCommand}" Width="80"/>
             <Button Content="Закрыть выбранную" Command="{Binding CloseTicketCommand}" Width="120" Margin="10,0,0,0"/>
+            <CheckBox IsChecked="{Binding OnlyMyDevices}" Content="Только мои устройства" 
+  Visibility="{Binding IsTeacher, Converter={StaticResource BoolToVisibilityConverter}}"
+  Margin="0,0,0,5"/>
         </StackPanel>
-
+        
         <ListView Grid.Row="1" ItemsSource="{Binding Tickets}" SelectedItem="{Binding SelectedTicket}">
+            
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ID" DisplayMemberBinding="{Binding TicketID}" Width="40"/>

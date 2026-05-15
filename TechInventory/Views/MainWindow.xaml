@@ -61,35 +61,44 @@
                 <ItemsControl ItemsSource="{Binding Devices}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" ItemWidth="160" ItemHeight="130"/>
+                            <WrapPanel Orientation="Horizontal" ItemWidth="170" ItemHeight="170"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:DeviceTileViewModel}">
-                            <Border Margin="5" Padding="5" BorderThickness="2" 
-                                    CornerRadius="8" Background="#F9F9F9" Cursor="Hand"
-                                    MouseLeftButtonDown="DeviceTile_Click">
+                            <Border Margin="6" Padding="12" BorderThickness="1" CornerRadius="12"
+            Background="#FEFEFE" Cursor="Hand"
+            MouseLeftButtonDown="DeviceTile_Click">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.12"/>
+                                </Border.Effect>
                                 <Border.Style>
                                     <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="#E0E0E0"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding HasOpenTickets}" Value="True">
                                                 <Setter Property="BorderBrush" Value="Red"/>
-                                                <Setter Property="BorderThickness" Value="3"/>
+                                                <Setter Property="BorderThickness" Value="2"/>
                                             </DataTrigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F5F5F5"/>
+                                            </Trigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" 
-                                               HorizontalAlignment="Center" TextWrapping="Wrap"/>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-                                        <TextBlock Text="{Binding StatusName}" Foreground="{Binding StatusName, Converter={StaticResource StatusToColorConverter}}"/>
-                                        <TextBlock Text=" !" Foreground="Red" FontWeight="Bold"
-                                                   Visibility="{Binding HasOpenTickets, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                    </StackPanel>
-                                    <TextBlock Text="{Binding AssignedTo}" FontSize="11" Foreground="Gray" 
-                                               HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" 
-                                               Visibility="{Binding AssignedTo, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                    <TextBlock Text="{Binding Icon}" FontSize="28" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"
+                       HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"
+                       ToolTip="{Binding Name}"/>
+                                    <TextBlock Text="{Binding StatusName}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,2"
+                       Foreground="{Binding StatusName, Converter={StaticResource StatusToColorConverter}}"/>
+                                    <TextBlock Text=" !" Foreground="Red" FontWeight="Bold" FontSize="14"
+                       Visibility="{Binding HasOpenTickets, Converter={StaticResource BoolToVisibilityConverter}}"
+                       HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding AssignedTo}" FontSize="10" Foreground="Gray"
+                       HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"
+                       Visibility="{Binding AssignedTo, Converter={StaticResource StringToVisibilityConverter}}"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

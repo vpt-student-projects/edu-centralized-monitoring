@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using Inventory.Core.Interfaces;
 using Inventory.Core.Models;
+using TechInventory.Helpers;      
 
 namespace TechInventory.Views
 {
@@ -39,7 +39,8 @@ namespace TechInventory.Views
             var newUser = new User
             {
                 Login = login,
-                PasswordHash = password,
+                // Хешируем пароль перед сохранением
+                PasswordHash = PasswordHasher.Hash(password),
                 FullName = string.IsNullOrWhiteSpace(fullName) ? null : fullName,
                 Role = "Teacher"
             };

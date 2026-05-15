@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Inventory.Core;
+using TechInventory.Helpers;
 
 namespace TechInventory.Views
 {
@@ -55,7 +56,8 @@ namespace TechInventory.Views
 
             try
             {
-                var user = await _services.UserRepository.GetByLoginAsync(login, password);
+                string passwordHash = PasswordHasher.Hash(password);
+                var user = await _services.UserRepository.GetByLoginAsync(login, passwordHash);
                 if (user != null)
                 {
                     var mainWindow = new MainWindow(_services, user);

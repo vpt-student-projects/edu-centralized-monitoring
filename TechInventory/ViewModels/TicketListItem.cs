@@ -10,5 +10,6 @@
         public string Status { get; set; } = "";
         public string CreatedAt { get; set; } = "";
         public int? RoomID { get; set; }
+        public int DeviceID { get; set; }
     }
 }

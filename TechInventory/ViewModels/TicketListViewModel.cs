@@ -15,6 +15,7 @@ namespace TechInventory.ViewModels
     {
         private readonly AppServices _services;
         private readonly User? _currentUser;
+        private HashSet<int> _userDeviceIds = new();
         public bool IsTeacher => _currentUser?.Role == "Teacher";
         private bool _onlyMyDevices;
         public bool OnlyMyDevices
@@ -73,6 +74,20 @@ namespace TechInventory.ViewModels
         {
             try
             {
+                if (IsTeacher && _currentUser != null)
+                {
+                    var devices = await _services.DeviceRepository.GetAllAsync();
+                    _userDeviceIds = new HashSet<int>(
+                        devices
+                            .Where(d => d.AssignedToUserID == _currentUser.UserID)
+                            .Select(d => d.DeviceID)
+                    );
+                }
+                else
+                {
+                    _userDeviceIds.Clear();
+                }
+
                 var tickets = await _services.TicketRepository.GetAllTicketsAsync();
                 _allTickets.Clear();
 
@@ -81,6 +96,7 @@ namespace TechInventory.ViewModels
                     var item = new TicketListItem
                     {
                         TicketID = ticket.TicketID,
+                        DeviceID = ticket.DeviceID,
                         Description = ticket.Description ?? "",
                         CreatedAt = ticket.CreatedAt.ToString("g"),
                         RoomID = ticket.RoomID
@@ -146,6 +162,9 @@ namespace TechInventory.ViewModels
 
             if (SelectedRoomId.HasValue && SelectedRoomId.Value > 0)
                 filtered = filtered.Where(t => t.RoomID == SelectedRoomId.Value);
+
+            if (IsTeacher && OnlyMyDevices)
+                filtered = filtered.Where(t => _userDeviceIds.Contains(t.DeviceID));
 
             foreach (var t in filtered.OrderByDescending(t => t.TicketID))
                 Tickets.Add(t);

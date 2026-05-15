@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Inventory.Core.Models;
+using TechInventory.Helpers;
 
 namespace TechInventory.Views
 {
@@ -58,7 +59,7 @@ namespace TechInventory.Views
             User.Role = ((ComboBoxItem)RoleCombo.SelectedItem).Tag.ToString();
 
             if (!string.IsNullOrWhiteSpace(password))
-                User.PasswordHash = password; 
+                User.PasswordHash = PasswordHasher.Hash(password);
 
             DialogResult = true;
             Close();

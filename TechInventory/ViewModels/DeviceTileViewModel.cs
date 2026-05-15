@@ -8,5 +8,6 @@
         public bool HasOpenTickets { get; set; }
         public string AssignedTo { get; set; } = "";
         public string TooltipText => $"{Name} — {StatusName}";
+        public string Icon { get; set; } = "";
     }
 }

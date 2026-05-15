@@ -12,12 +12,13 @@ namespace TechInventory.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        private Dictionary<int, string> _deviceTypes = new();
         private readonly AppServices _services;
         private RoomNodeViewModel? _selectedRoom;
         private bool _isLoading;
         private Dictionary<int, string> _deviceStatuses = new();
         private HashSet<int> _deviceIdsWithOpenTickets = new();
-        private Dictionary<int, string> _userNames = new();   // для быстрого получения имени ответственного
+        private Dictionary<int, string> _userNames = new();   
 
         public ObservableCollection<TreeNodeViewModel> Buildings { get; } = new();
         public ObservableCollection<DeviceTileViewModel> Devices { get; } = new();
@@ -54,6 +55,8 @@ namespace TechInventory.ViewModels
             {
                 var statuses = await _services.DictionaryRepository.GetByCategoryAsync("DeviceStatus");
                 _deviceStatuses = statuses.ToDictionary(s => s.ID, s => s.Value);
+                var types = await _services.DictionaryRepository.GetByCategoryAsync("DeviceType");
+                _deviceTypes = types.ToDictionary(t => t.ID, t => t.Value);
                 var openTicketsDevices = await _services.DeviceRepository.GetDevicesWithOpenTicketsAsync();
                 _deviceIdsWithOpenTickets = new HashSet<int>(openTicketsDevices.Select(d => d.DeviceID));
                 var users = await _services.UserRepository.GetAllAsync();
@@ -115,13 +118,22 @@ namespace TechInventory.ViewModels
                     if (device.AssignedToUserID.HasValue)
                         _userNames.TryGetValue(device.AssignedToUserID.Value, out assignedTo);
 
+                    string typeName = _deviceTypes.TryGetValue(device.TypeID, out var tname) ? tname : "?";
+                    string icon = typeName switch
+                    {
+                        "Системный блок" => "🖥️",
+                        "Монитор" => "🖥️",   
+                        "Принтер" => "🖨️",
+                        _ => "📦"
+                    };
                     Devices.Add(new DeviceTileViewModel
                     {
                         DeviceID = device.DeviceID,
                         Name = device.Name,
                         StatusName = statusName,
                         HasOpenTickets = hasOpenTicket,
-                        AssignedTo = assignedTo ?? ""
+                        AssignedTo = assignedTo ?? "",
+                        Icon = icon
                     });
                 }
             }

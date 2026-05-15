@@ -1,8 +1,8 @@
 ﻿<Window x:Class="TechInventory.Views.RoomEditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Кабинет"
-        Height="200" Width="300"
+        Title="Редактирование кабинета"
+        Height="250" Width="350"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
     <Grid Margin="15">
@@ -11,24 +11,24 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Название кабинета:"/>
-        <TextBox Grid.Row="0" x:Name="NameBox" HorizontalAlignment="Right" Width="150" Margin="0,5"/>
+        <TextBlock Text="Название (номер):" Margin="0,5"/>
+        <TextBox Grid.Row="0" x:Name="NameBox" HorizontalAlignment="Right" Width="200" Margin="0,5"/>
 
-        <TextBlock Grid.Row="1" Text="Этаж:"/>
-        <TextBox Grid.Row="1" x:Name="FloorBox" HorizontalAlignment="Right" Width="150" Margin="0,5"/>
+        <TextBlock Grid.Row="1" Text="Этаж:" Margin="0,5"/>
+        <TextBox Grid.Row="1" x:Name="FloorBox" HorizontalAlignment="Right" Width="200" Margin="0,5"/>
 
-        <TextBlock Grid.Row="2" Text="Корпус:"/>
-        <TextBox Grid.Row="2" x:Name="BuildingBox" HorizontalAlignment="Right" Width="150" Margin="0,5"/>
+        <TextBlock Grid.Row="2" Text="Корпус:" Margin="0,5"/>
+        <TextBox Grid.Row="2" x:Name="BuildingBox" HorizontalAlignment="Right" Width="200" Margin="0,5"/>
 
-        <TextBlock Grid.Row="3" Text="Описание:"/>
-        <TextBox Grid.Row="3" x:Name="DescriptionBox" HorizontalAlignment="Right" Width="150" Margin="0,5"/>
+        <TextBlock Grid.Row="3" Text="Описание:" Margin="0,5"/>
+        <TextBox Grid.Row="3" x:Name="DescriptionBox" HorizontalAlignment="Right" Width="200" Margin="0,5"/>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="Сохранить" Click="Save_Click" Width="80" Margin="0,0,10,0"/>
-            <Button Content="Отмена" Click="Cancel_Click" Width="80"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,10,0,0">
+            <Button Content="Сохранить" Click="SaveButton_Click" Width="80" Margin="0,0,10,0"/>
+            <Button Content="Отмена" Click="CancelButton_Click" Width="80"/>
         </StackPanel>
     </Grid>
 </Window>

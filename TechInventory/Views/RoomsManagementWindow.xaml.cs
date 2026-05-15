@@ -64,7 +64,6 @@ namespace TechInventory.Views
                 MessageBox.Show("Выберите кабинет для удаления", "Инфо", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            // Проверка на наличие устройств в комнате (можно запросом)
             var result = MessageBox.Show($"Удалить кабинет '{selected.Name}'?", "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {

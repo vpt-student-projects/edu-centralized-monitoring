@@ -28,27 +28,30 @@ namespace TechInventory.Views
             }
         }
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(NameBox.Text))
+            string name = NameBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(name))
             {
-                MessageBox.Show("Название обязательно", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Введите название кабинета", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            if (!int.TryParse(FloorBox.Text, out int floor))
+            if (!int.TryParse(FloorBox.Text.Trim(), out int floor))
             {
-                MessageBox.Show("Этаж должен быть числом", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Некорректный этаж", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            Room.Name = NameBox.Text.Trim();
+
+            Room.Name = name;
             Room.Floor = floor;
             Room.Building = BuildingBox.Text.Trim();
             Room.Description = string.IsNullOrWhiteSpace(DescriptionBox.Text) ? null : DescriptionBox.Text.Trim();
+
             DialogResult = true;
             Close();
         }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();

@@ -6,5 +6,6 @@
         <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" 
                                            TrueValue="Visible" FalseValue="Collapsed"/>
         <helpers:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <helpers:StatusToColorConverter x:Key="StatusToColorConverter"/>
     </Application.Resources>
 </Application>

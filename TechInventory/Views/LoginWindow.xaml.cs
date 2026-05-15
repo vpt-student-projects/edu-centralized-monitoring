@@ -63,6 +63,7 @@ namespace TechInventory.Views
                     var mainWindow = new MainWindow(_services, user);
                     mainWindow.Show();
                     this.Close();
+                    Logger.Log($"Пользователь {user.Login} вошёл");
                 }
                 else
                 {

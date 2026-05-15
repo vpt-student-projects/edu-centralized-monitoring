@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Inventory.Core.Interfaces;
+using TechInventory.Helpers;
 
 namespace TechInventory.Views
 {
@@ -41,6 +42,7 @@ namespace TechInventory.Views
                 CreatedTicketId = ticket.TicketID;
                 DialogResult = true;
                 Close();
+                Logger.Log($"Заявка #{ticket.TicketID} создана для устройства {_deviceName}");
             }
             catch (Exception ex)
             {

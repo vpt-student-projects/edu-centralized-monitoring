@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Inventory.Core.Models;
+using TechInventory.Helpers;
 
 namespace TechInventory.Views
 {
@@ -86,6 +87,7 @@ namespace TechInventory.Views
 
                 DialogResult = true;
                 Close();
+                Logger.Log($"Устройство {CurrentDevice.Name} перемещено из {CurrentDevice.CurrentRoomID} в {SelectedRoomId}");
             }
             catch (Exception ex)
             {

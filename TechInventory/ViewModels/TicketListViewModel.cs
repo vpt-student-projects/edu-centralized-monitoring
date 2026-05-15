@@ -181,6 +181,7 @@ namespace TechInventory.ViewModels
             {
                 await _services.TicketService.CloseTicketAsync(SelectedTicket.TicketID);
                 await LoadTicketsAsync();
+                Logger.Log($"Заявка #{SelectedTicket.TicketID} закрыта");
             }
             catch (Exception ex)
             {

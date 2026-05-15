@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using Inventory.Core.Interfaces;
+using TechInventory.Helpers;
 using TechInventory.ViewModels;
 
 namespace TechInventory.Views
@@ -42,6 +43,7 @@ namespace TechInventory.Views
             if (dlg.ShowDialog() == true)
             {
                 await _userRepo.AddAsync(dlg.User);
+                Logger.Log($"Добавлен пользователь: {dlg.User.Login} (роль {dlg.User.Role})");
                 await LoadUsers();
             }
         }
@@ -63,6 +65,7 @@ namespace TechInventory.Views
             if (dlg.ShowDialog() == true)
             {
                 await _userRepo.UpdateAsync(fullUser);
+                Logger.Log($"Изменён пользователь: {fullUser.Login} (роль {fullUser.Role})");
                 await LoadUsers();
             }
         }
@@ -80,6 +83,7 @@ namespace TechInventory.Views
             if (result == MessageBoxResult.Yes)
             {
                 await _userRepo.DeleteAsync(selected.UserID);
+                Logger.Log($"Удалён пользователь: {selected.Login}");
                 await LoadUsers();
             }
         }

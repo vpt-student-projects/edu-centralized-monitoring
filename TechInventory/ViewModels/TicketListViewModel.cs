@@ -15,9 +15,9 @@ namespace TechInventory.ViewModels
         private readonly AppServices _services;
 
         public ObservableCollection<TicketListItem> Tickets { get; } = new();
-
         public ObservableCollection<string> PriorityOptions { get; } = new() { "Все", "Высокий", "Средний", "Низкий" };
         public ObservableCollection<string> StatusOptions { get; } = new() { "Все", "Новая", "В работе", "Завершена" };
+        public ObservableCollection<RoomFilterItem> RoomOptions { get; } = new();
 
         private string _selectedPriority = "Все";
         public string SelectedPriority
@@ -31,6 +31,13 @@ namespace TechInventory.ViewModels
         {
             get => _selectedStatus;
             set { SetProperty(ref _selectedStatus, value); ApplyFilters(); }
+        }
+
+        private int? _selectedRoomId;
+        public int? SelectedRoomId
+        {
+            get => _selectedRoomId;
+            set { SetProperty(ref _selectedRoomId, value); ApplyFilters(); }
         }
 
         private TicketListItem? _selectedTicket;
@@ -66,7 +73,8 @@ namespace TechInventory.ViewModels
                     {
                         TicketID = ticket.TicketID,
                         Description = ticket.Description ?? "",
-                        CreatedAt = ticket.CreatedAt.ToString("g")
+                        CreatedAt = ticket.CreatedAt.ToString("g"),
+                        RoomID = ticket.RoomID
                     };
 
                     item.Status = ticket.StatusID switch
@@ -101,6 +109,14 @@ namespace TechInventory.ViewModels
                     _allTickets.Add(item);
                 }
 
+                // Загрузка комнат для фильтра
+                var rooms = await _services.RoomRepository.GetAllAsync();
+                RoomOptions.Clear();
+                RoomOptions.Add(new RoomFilterItem { RoomID = 0, DisplayName = "Все" });
+                foreach (var r in rooms.OrderBy(r => r.Name))
+                    RoomOptions.Add(new RoomFilterItem { RoomID = r.RoomID, DisplayName = r.Name });
+                SelectedRoomId = 0;
+
                 ApplyFilters();
             }
             catch (Exception ex)
@@ -119,6 +135,9 @@ namespace TechInventory.ViewModels
 
             if (SelectedStatus != "Все")
                 filtered = filtered.Where(t => t.Status == SelectedStatus);
+
+            if (SelectedRoomId.HasValue && SelectedRoomId.Value > 0)
+                filtered = filtered.Where(t => t.RoomID == SelectedRoomId.Value);
 
             foreach (var t in filtered.OrderByDescending(t => t.TicketID))
                 Tickets.Add(t);
@@ -141,5 +160,11 @@ namespace TechInventory.ViewModels
                 MessageBox.Show($"Ошибка закрытия заявки: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+    }
+
+    public class RoomFilterItem
+    {
+        public int RoomID { get; set; }
+        public string DisplayName { get; set; } = "";
     }
 }

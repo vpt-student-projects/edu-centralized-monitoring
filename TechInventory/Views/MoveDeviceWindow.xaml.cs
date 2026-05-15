@@ -44,7 +44,6 @@ namespace TechInventory.Views
             if (Rooms.Any())
                 SelectedRoomId = Rooms.First().RoomID;
 
-            // Текущий кабинет
             var currentRoom = await _roomRepo.GetByIdAsync(CurrentDevice.CurrentRoomID);
             CurrentRoomText.Text = $"Текущий кабинет: {currentRoom?.Name ?? CurrentDevice.CurrentRoomID.ToString()}";
         }

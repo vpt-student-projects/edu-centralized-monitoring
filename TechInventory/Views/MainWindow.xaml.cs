@@ -3,7 +3,7 @@ using System.Windows.Input;
 using Inventory.Core;
 using Inventory.Core.Models;
 using TechInventory.ViewModels;
-
+using TechInventory.Views;
 namespace TechInventory.Views
 {
     public partial class MainWindow : Window
@@ -19,7 +19,11 @@ namespace TechInventory.Views
             DataContext = new MainViewModel(services);
 
             if (currentUser.Role != "Admin")
+            {
                 UsersButton.Visibility = Visibility.Collapsed;
+                RoomsButton.Visibility = Visibility.Collapsed;
+                CreateTicketFromMainButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -62,6 +66,21 @@ namespace TechInventory.Views
                 createTicket.Owner = this;
                 createTicket.ShowDialog();
             }
+        }
+        private void ReportsButton_Click(object sender, RoutedEventArgs e)
+        {
+            string dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db");
+            var reportWindow = new ReportWindow(dbPath);
+            reportWindow.Owner = this;
+            reportWindow.ShowDialog();
+        }
+        private async void RoomsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var roomsWindow = new RoomsManagementWindow(_services.RoomRepository);
+            roomsWindow.Owner = this;
+            roomsWindow.ShowDialog();
+            if (DataContext is MainViewModel vm)
+                await vm.RefreshRoomsAsync();
         }
     }
 }

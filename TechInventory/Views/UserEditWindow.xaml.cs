@@ -58,7 +58,7 @@ namespace TechInventory.Views
             User.Role = ((ComboBoxItem)RoleCombo.SelectedItem).Tag.ToString();
 
             if (!string.IsNullOrWhiteSpace(password))
-                User.PasswordHash = password; // без хеширования для MVP
+                User.PasswordHash = password; 
 
             DialogResult = true;
             Close();

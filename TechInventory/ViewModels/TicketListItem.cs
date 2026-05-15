@@ -9,5 +9,6 @@
         public string Priority { get; set; } = "";
         public string Status { get; set; } = "";
         public string CreatedAt { get; set; } = "";
+        public int? RoomID { get; set; }
     }
 }

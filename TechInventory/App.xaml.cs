@@ -7,7 +7,6 @@ namespace TechInventory
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            // Окно входа запускается без предварительной инициализации сервисов
             var loginWindow = new Views.LoginWindow();
             loginWindow.Show();
         }

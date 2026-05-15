@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scripts\report_generator.py" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scripts\report_generator.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
     <PackageReference Include="SourceGear.sqlite3" Version="3.50.4.5" />
     <PackageReference Include="System.Data.SQLite" Version="2.0.3" />
@@ -17,7 +27,7 @@
 
   <ItemGroup>
     <Reference Include="Inventory.Core">
-      <HintPath>..\..\Inventory.Core\Inventory.Core\bin\Debug\net8.0\Inventory.Core.dll</HintPath>
+      <HintPath>..\Inventory.Core\Inventory.Core\bin\Debug\net8.0\Inventory.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

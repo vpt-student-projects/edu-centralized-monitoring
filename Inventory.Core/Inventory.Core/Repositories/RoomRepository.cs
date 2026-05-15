@@ -53,4 +53,39 @@ public class RoomRepository : BaseRepository, IRoomRepository
         }
         return null;
     }
+    public async Task AddAsync(Room room)
+    {
+        using var conn = CreateConnection();
+        await conn.OpenAsync();
+        using var cmd = new SQLiteCommand(
+            "INSERT INTO Rooms (Name, Floor, Building, Description) VALUES (@name, @floor, @building, @desc)", conn);
+        cmd.Parameters.AddWithValue("@name", room.Name);
+        cmd.Parameters.AddWithValue("@floor", room.Floor);
+        cmd.Parameters.AddWithValue("@building", room.Building);
+        cmd.Parameters.AddWithValue("@desc", (object?)room.Description ?? DBNull.Value);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateAsync(Room room)
+    {
+        using var conn = CreateConnection();
+        await conn.OpenAsync();
+        using var cmd = new SQLiteCommand(
+            "UPDATE Rooms SET Name = @name, Floor = @floor, Building = @building, Description = @desc WHERE RoomID = @id", conn);
+        cmd.Parameters.AddWithValue("@name", room.Name);
+        cmd.Parameters.AddWithValue("@floor", room.Floor);
+        cmd.Parameters.AddWithValue("@building", room.Building);
+        cmd.Parameters.AddWithValue("@desc", (object?)room.Description ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@id", room.RoomID);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task DeleteAsync(int roomId)
+    {
+        using var conn = CreateConnection();
+        await conn.OpenAsync();
+        using var cmd = new SQLiteCommand("DELETE FROM Rooms WHERE RoomID = @id", conn);
+        cmd.Parameters.AddWithValue("@id", roomId);
+        await cmd.ExecuteNonQueryAsync();
+    }
 }

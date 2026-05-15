@@ -58,7 +58,6 @@ namespace TechInventory.Views
                 var user = await _services.UserRepository.GetByLoginAsync(login, password);
                 if (user != null)
                 {
-                    // Передаём пользователя в главное окно
                     var mainWindow = new MainWindow(_services, user);
                     mainWindow.Show();
                     this.Close();

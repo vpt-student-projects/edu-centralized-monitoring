@@ -20,7 +20,7 @@ namespace TechInventory.ViewModels
         private string _typeName = "";
         private string _assignedUserName = "нет";
         private bool _isLoading;
-
+        public bool IsAdmin { get; }
         public ObservableCollection<MovementViewModel> Movements { get; } = new();
         public ObservableCollection<TicketViewModel> Tickets { get; } = new();
 
@@ -72,6 +72,7 @@ namespace TechInventory.ViewModels
         {
             _services = services;
             _deviceId = deviceId;
+            IsAdmin = MainWindow.CurrentUser?.Role == "Admin";
             MoveDeviceCommand = new RelayCommand(async _ => await MoveDevice(), _ => Device != null);
             CreateTicketCommand = new RelayCommand(async _ => await CreateTicket(), _ => Device != null);
             AssignUserCommand = new RelayCommand(async _ => await AssignUser(), _ => CanAssign && SelectedUserId.HasValue);
@@ -114,7 +115,6 @@ namespace TechInventory.ViewModels
                     AssignedUserName = "нет";
                 }
 
-                // Загрузка списка пользователей для назначения (только для админа)
                 if (CanAssign)
                 {
                     var allUsers = await _services.UserRepository.GetAllAsync();
@@ -123,8 +123,6 @@ namespace TechInventory.ViewModels
                         AvailableUsers.Add(u);
                     SelectedUserId = Device.AssignedToUserID;
                 }
-
-                // 5. Перемещения с названиями кабинетов
                 try
                 {
                     var movements = await _services.MovementRepository.GetByDeviceAsync(_deviceId);
@@ -162,7 +160,6 @@ namespace TechInventory.ViewModels
                     ShowError($"Ошибка загрузки перемещений: {ex.Message}");
                 }
 
-                // 6. Заявки
                 try
                 {
                     var tickets = await _services.TicketRepository.GetByDeviceAsync(_deviceId);
@@ -271,8 +268,6 @@ namespace TechInventory.ViewModels
             AssignedUserName = user?.FullName ?? user?.Login ?? "нет";
         }
     }
-
-    // Вспомогательные классы остаются без изменений
     public class TicketViewModel : ViewModelBase
     {
         public int TicketID { get; set; }

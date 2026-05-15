@@ -15,7 +15,6 @@ namespace TechInventory.ViewModels
             set => SetProperty(ref _isExpanded, value);
         }
 
-        // Для корневых узлов (корпуса) полезно сразу раскрыть
         public TreeNodeViewModel()
         {
             IsExpanded = true;

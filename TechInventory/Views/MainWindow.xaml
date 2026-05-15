@@ -44,6 +44,7 @@
                 <Button Content="+ Заявка" x:Name="CreateTicketFromMainButton" Click="CreateTicketFromMain_Click" Height="30" Margin="0,0,0,5"/>
                 <Button Content="📊 Отчёты" Click="ReportsButton_Click" Height="30" Margin="0,0,0,5"/>
                 <Button Content="📁 Кабинеты" x:Name="RoomsButton" Click="RoomsButton_Click" Height="30" Margin="0,0,0,5"/>
+                <Button Content="📚 Справочники" Click="DictionaryButton_Click" Height="30" Margin="0,0,0,5"/>
                 <Button Content="👤 Пользователи" x:Name="UsersButton" Click="UsersButton_Click" Height="30"/>
             </StackPanel>
         </Grid>

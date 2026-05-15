@@ -82,5 +82,11 @@ namespace TechInventory.Views
             if (DataContext is MainViewModel vm)
                 await vm.RefreshRoomsAsync();
         }
+        private void DictionaryButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dictWindow = new DictionaryWindow(_services.DictionaryRepository);
+            dictWindow.Owner = this;
+            dictWindow.ShowDialog();
+        }
     }
 }

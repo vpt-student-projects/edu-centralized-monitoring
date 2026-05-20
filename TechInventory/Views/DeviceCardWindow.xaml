@@ -47,7 +47,6 @@
                 <ListView ItemsSource="{Binding Tickets}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="ID" DisplayMemberBinding="{Binding TicketID}" Width="40"/>
                             <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding Description}" Width="180"/>
                             <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="80"/>
                             <GridViewColumn Header="Приоритет" DisplayMemberBinding="{Binding Priority}" Width="80"/>

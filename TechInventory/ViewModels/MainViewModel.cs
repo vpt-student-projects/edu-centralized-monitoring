@@ -18,10 +18,11 @@ namespace TechInventory.ViewModels
         private bool _isLoading;
         private Dictionary<int, string> _deviceStatuses = new();
         private HashSet<int> _deviceIdsWithOpenTickets = new();
-        private Dictionary<int, string> _userNames = new();   
-
+        private Dictionary<int, string> _userNames = new();
+        public bool IsRoomSelected => SelectedRoom != null;
         public ObservableCollection<TreeNodeViewModel> Buildings { get; } = new();
         public ObservableCollection<DeviceTileViewModel> Devices { get; } = new();
+
         private string _searchText = "";
         public string SearchText
         {
@@ -41,13 +42,17 @@ namespace TechInventory.ViewModels
                 Devices.Add(tile);
             }
         }
+
         public RoomNodeViewModel? SelectedRoom
         {
             get => _selectedRoom;
             set
             {
                 if (SetProperty(ref _selectedRoom, value))
+                {
                     _ = LoadDevicesForSelectedRoomAsync();
+                    OnPropertyChanged(nameof(IsRoomSelected));
+                }
             }
         }
 
@@ -129,6 +134,7 @@ namespace TechInventory.ViewModels
                 var devices = await _services.DeviceService.GetDevicesByRoomAsync(SelectedRoom.RoomID);
                 _allDeviceTiles.Clear();
                 Devices.Clear();
+
                 foreach (var device in devices.OrderBy(d => d.PositionInRoom ?? 0))
                 {
                     string statusName = _deviceStatuses.TryGetValue(device.StatusID, out var name) ? name : "?";
@@ -142,11 +148,12 @@ namespace TechInventory.ViewModels
                     string icon = typeName switch
                     {
                         "Системный блок" => "🖥️",
-                        "Монитор" => "🖥️",   
+                        "Монитор" => "🖨️",
                         "Принтер" => "🖨️",
                         _ => "📦"
                     };
-                    Devices.Add(new DeviceTileViewModel
+
+                    _allDeviceTiles.Add(new DeviceTileViewModel
                     {
                         DeviceID = device.DeviceID,
                         Name = device.Name,
@@ -155,9 +162,9 @@ namespace TechInventory.ViewModels
                         AssignedTo = assignedTo ?? "",
                         Icon = icon
                     });
-                    _allDeviceTiles = Devices.ToList(); 
-                    ApplyDeviceFilter(); 
                 }
+
+                ApplyDeviceFilter();
             }
             catch (System.Exception ex)
             {
@@ -165,6 +172,7 @@ namespace TechInventory.ViewModels
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         public async Task RefreshRoomsAsync()
         {
             var rooms = await _services.RoomRepository.GetAllAsync();

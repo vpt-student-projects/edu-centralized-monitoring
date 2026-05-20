@@ -16,6 +16,15 @@
             <Button Content="✕ Удалить" Click="Delete_Click" Width="80" Background="LightCoral"/>
         </StackPanel>
 
-        <DataGrid Grid.Row="1" x:Name="RoomsGrid" AutoGenerateColumns="True" IsReadOnly="True"/>
+        <ListView Grid.Row="1" ItemsSource="{Binding Rooms}" x:Name="RoomsListView">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Название" DisplayMemberBinding="{Binding Name}" Width="80"/>
+                    <GridViewColumn Header="Этаж" DisplayMemberBinding="{Binding Floor}" Width="60"/>
+                    <GridViewColumn Header="Корпус" DisplayMemberBinding="{Binding Building}" Width="80"/>
+                    <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding Description}" Width="200"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

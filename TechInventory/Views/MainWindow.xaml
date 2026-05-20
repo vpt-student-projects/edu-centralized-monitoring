@@ -5,6 +5,42 @@
         Title="TechInventory – Главная"
         Height="600" Width="1000"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <!-- Стиль красивого поисковика -->
+        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderBrush" Value="#CCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="#F9F9F9"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border CornerRadius="8" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <TextBlock x:Name="Placeholder" Text="🔍 Поиск устройства…"
+                                           VerticalAlignment="Center" Margin="10,0,0,0"
+                                           Foreground="Gray" FontStyle="Italic"
+                                           Visibility="Collapsed"/>
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="10,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#007ACC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
@@ -52,15 +88,19 @@
         <Grid Grid.Column="1" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="{Binding SelectedRoom.RoomName, StringFormat='Кабинет {0}'}" 
+            <TextBlock Grid.Row="0" Text="{Binding SelectedRoom.RoomName}" 
                        FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
-            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-         Width="150" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
 
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <TextBox Grid.Row="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                     Width="200" Margin="0,0,0,10"
+                     Style="{StaticResource SearchTextBoxStyle}"
+                     Visibility="{Binding IsRoomSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Devices}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -70,8 +110,8 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:DeviceTileViewModel}">
                             <Border Margin="6" Padding="12" BorderThickness="1" CornerRadius="12"
-            Background="#FEFEFE" Cursor="Hand"
-            MouseLeftButtonDown="DeviceTile_Click">
+                                    Background="#FEFEFE" Cursor="Hand"
+                                    MouseLeftButtonDown="DeviceTile_Click">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.12"/>
                                 </Border.Effect>
@@ -92,16 +132,16 @@
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Icon}" FontSize="28" HorizontalAlignment="Center" Margin="0,0,0,8"/>
                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"
-                       HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"
-                       ToolTip="{Binding Name}"/>
+                                               HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"
+                                               ToolTip="{Binding Name}"/>
                                     <TextBlock Text="{Binding StatusName}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,2"
-                       Foreground="{Binding StatusName, Converter={StaticResource StatusToColorConverter}}"/>
+                                               Foreground="{Binding StatusName, Converter={StaticResource StatusToColorConverter}}"/>
                                     <TextBlock Text=" !" Foreground="Red" FontWeight="Bold" FontSize="14"
-                       Visibility="{Binding HasOpenTickets, Converter={StaticResource BoolToVisibilityConverter}}"
-                       HorizontalAlignment="Center"/>
+                                               Visibility="{Binding HasOpenTickets, Converter={StaticResource BoolToVisibilityConverter}}"
+                                               HorizontalAlignment="Center"/>
                                     <TextBlock Text="{Binding AssignedTo}" FontSize="10" Foreground="Gray"
-                       HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"
-                       Visibility="{Binding AssignedTo, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                               HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                               Visibility="{Binding AssignedTo, Converter={StaticResource StringToVisibilityConverter}}"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

@@ -16,6 +16,7 @@ namespace TechInventory.Views
         {
             InitializeComponent();
             _roomRepo = roomRepo;
+            DataContext = this;
             Loaded += async (s, e) => await LoadRooms();
         }
 
@@ -24,8 +25,12 @@ namespace TechInventory.Views
             var rooms = await _roomRepo.GetAllAsync();
             Rooms.Clear();
             foreach (var r in rooms)
+            {
+                if (r.Building == "Техникум")
+                    r.Building = "1";
                 Rooms.Add(r);
-            RoomsGrid.ItemsSource = Rooms;
+            }
+            RoomsListView.SelectedItem = Rooms.FirstOrDefault();
         }
 
         private async void Add_Click(object sender, RoutedEventArgs e)
@@ -41,7 +46,7 @@ namespace TechInventory.Views
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
         {
-            var selected = RoomsGrid.SelectedItem as Room;
+            var selected = RoomsListView.SelectedItem as Room;
             if (selected == null)
             {
                 MessageBox.Show("Выберите кабинет для редактирования", "Инфо", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -58,7 +63,7 @@ namespace TechInventory.Views
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
-            var selected = RoomsGrid.SelectedItem as Room;
+            var selected = RoomsListView.SelectedItem as Room;
             if (selected == null)
             {
                 MessageBox.Show("Выберите кабинет для удаления", "Инфо", MessageBoxButton.OK, MessageBoxImage.Information);

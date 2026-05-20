@@ -5,7 +5,7 @@
         Height="400" Width="650"
         WindowStartupLocation="CenterOwner">
     <Grid Margin="10">
-        <Grid.RowDefinitions>
+        <Grid.RowDefinitions>   
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -26,9 +26,9 @@
         <ListView Grid.Row="1" ItemsSource="{Binding Items}" x:Name="ItemsListView">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ID}" Width="40"/>
-                    <GridViewColumn Header="Категория" DisplayMemberBinding="{Binding Category}" Width="120"/>
-                    <GridViewColumn Header="Значение" DisplayMemberBinding="{Binding Value}" Width="150"/>
+                    <GridViewColumn Header="Код" DisplayMemberBinding="{Binding ID}" Width="50"/>
+                    <GridViewColumn Header="Категория" DisplayMemberBinding="{Binding Category}" Width="130"/>
+                    <GridViewColumn Header="Наименование" DisplayMemberBinding="{Binding Value}" Width="200"/>
                 </GridView>
             </ListView.View>
         </ListView>

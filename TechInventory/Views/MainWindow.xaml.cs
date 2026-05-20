@@ -4,6 +4,7 @@ using Inventory.Core;
 using Inventory.Core.Models;
 using TechInventory.ViewModels;
 using TechInventory.Views;
+
 namespace TechInventory.Views
 {
     public partial class MainWindow : Window
@@ -67,6 +68,7 @@ namespace TechInventory.Views
                 createTicket.ShowDialog();
             }
         }
+
         private void ReportsButton_Click(object sender, RoutedEventArgs e)
         {
             string dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db");
@@ -74,6 +76,7 @@ namespace TechInventory.Views
             reportWindow.Owner = this;
             reportWindow.ShowDialog();
         }
+
         private async void RoomsButton_Click(object sender, RoutedEventArgs e)
         {
             var roomsWindow = new RoomsManagementWindow(_services.RoomRepository);
@@ -82,6 +85,7 @@ namespace TechInventory.Views
             if (DataContext is MainViewModel vm)
                 await vm.RefreshRoomsAsync();
         }
+
         private void DictionaryButton_Click(object sender, RoutedEventArgs e)
         {
             var dictWindow = new DictionaryWindow(_services.DictionaryRepository);

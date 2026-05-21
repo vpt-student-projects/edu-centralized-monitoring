@@ -81,7 +81,6 @@ def generate_inventory_report(conn, output_dir):
     print(f"Инвентаризационный отчёт сохранён: {output_path}")
 
 def generate_tickets_report(conn, output_dir):
-    # В твоей таблице Tickets нет столбца ClosedAt, поэтому мы его не используем
     query = """
         SELECT t.TicketID, d.Name as DeviceName, t.Description,
                CASE t.Priority

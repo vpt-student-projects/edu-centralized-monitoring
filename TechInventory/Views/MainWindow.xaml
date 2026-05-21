@@ -3,28 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:TechInventory.ViewModels"
         Title="TechInventory – Главная"
-        Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        Height="640" Width="1060"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource AppBackgroundBrush}">
     <Window.Resources>
-        <!-- Стиль красивого поисковика -->
-        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Padding" Value="10,6"/>
-            <Setter Property="BorderBrush" Value="#CCC"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="#F9F9F9"/>
-            <Setter Property="FontSize" Value="14"/>
+        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+            <Setter Property="Width" Value="240"/>
+            <Setter Property="Height" Value="36"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border CornerRadius="8" Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border CornerRadius="20" Background="#F9F9F9"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                             <Grid>
                                 <TextBlock x:Name="Placeholder" Text="🔍 Поиск устройства…"
-                                           VerticalAlignment="Center" Margin="10,0,0,0"
-                                           Foreground="Gray" FontStyle="Italic"
+                                           VerticalAlignment="Center" Margin="14,0,0,0"
+                                           Foreground="#999" FontStyle="Italic"
                                            Visibility="Collapsed"/>
-                                <ScrollViewer x:Name="PART_ContentHost" Margin="10,0"/>
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="14,0"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -32,7 +28,7 @@
                                 <Setter TargetName="Placeholder" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="BorderBrush" Value="#007ACC"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -43,49 +39,69 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="260"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <Border Grid.Column="0" Background="White" BorderBrush="#E8E8E8" BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <TreeView Grid.Row="0" ItemsSource="{Binding Buildings}" 
-                      BorderThickness="0,0,1,0" BorderBrush="LightGray" Padding="5"
-                      SelectedItemChanged="TreeView_SelectedItemChanged">
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="TreeViewItem">
-                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type vm:BuildingNodeViewModel}" 
-                                              ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                    </HierarchicalDataTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type vm:FloorNodeViewModel}" 
-                                              ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Name}"/>
-                    </HierarchicalDataTemplate>
-                    <DataTemplate DataType="{x:Type vm:RoomNodeViewModel}">
-                        <TextBlock Text="{Binding Name}"/>
-                    </DataTemplate>
-                </TreeView.Resources>
-            </TreeView>
-            <StackPanel Grid.Row="1" Margin="5,0,5,10">
-                <Button Content="📋 Заявки" Click="TicketsButton_Click" Height="30" Margin="0,0,0,5"/>
-                <Button Content="+ Заявка" x:Name="CreateTicketFromMainButton" Click="CreateTicketFromMain_Click" Height="30" Margin="0,0,0,5"/>
-                <Button Content="📊 Отчёты" Click="ReportsButton_Click" Height="30" Margin="0,0,0,5"/>
-                <Button Content="📁 Кабинеты" x:Name="RoomsButton" Click="RoomsButton_Click" Height="30" Margin="0,0,0,5"/>
-                <Button Content="📚 Справочники" Click="DictionaryButton_Click" Height="30" Margin="0,0,0,5"/>
-                <Button Content="👤 Пользователи" x:Name="UsersButton" Click="UsersButton_Click" Height="30"/>
-            </StackPanel>
-        </Grid>
+                <Border Grid.Row="0" Padding="16,20" Background="Transparent">
+                    <TextBlock Text="Кабинеты" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                </Border>
 
-        <Grid Grid.Column="1" Margin="10">
+                <TreeView Grid.Row="1" ItemsSource="{Binding Buildings}" 
+                          BorderThickness="0" Padding="12,0"
+                          SelectedItemChanged="TreeView_SelectedItemChanged">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                            <Setter Property="Padding" Value="2,4"/>
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type vm:BuildingNodeViewModel}" 
+                                                  ItemsSource="{Binding Children}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📁" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type vm:FloorNodeViewModel}" 
+                                                  ItemsSource="{Binding Children}">
+                            <StackPanel Orientation="Horizontal" Margin="16,0,0,0">
+                                <TextBlock Text="📂" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                        <DataTemplate DataType="{x:Type vm:RoomNodeViewModel}">
+                            <StackPanel Orientation="Horizontal" Margin="32,0,0,0">
+                                <TextBlock Text="🔹" Margin="0,0,6,0" Foreground="{StaticResource AccentBrush}"/>
+                                <TextBlock Text="{Binding Name}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </TreeView.Resources>
+                </TreeView>
+
+                <StackPanel Grid.Row="2" Margin="12,0,12,16">
+                    <Button Content="📋 Заявки" Click="TicketsButton_Click" Style="{StaticResource SecondaryButtonStyle}" Margin="0,4" Height="38"/>
+                    <Button Content="➕ Новая заявка" x:Name="CreateTicketFromMainButton" Click="CreateTicketFromMain_Click" Style="{StaticResource SecondaryButtonStyle}" Margin="0,4" Height="38"/>
+                    <Button Content="📊 Отчёты" Click="ReportsButton_Click" Style="{StaticResource SecondaryButtonStyle}" Margin="0,4" Height="38"/>
+                    <Button Content="🚪 Кабинеты" x:Name="RoomsButton" Click="RoomsButton_Click" Style="{StaticResource SecondaryButtonStyle}" Margin="0,4" Height="38"/>
+                    <Button Content="📚 Справочники" Click="DictionaryButton_Click" Style="{StaticResource SecondaryButtonStyle}" Margin="0,4" Height="38"/>
+                    <Button Content="👥 Пользователи" x:Name="UsersButton" Click="UsersButton_Click" Style="{StaticResource SecondaryButtonStyle}" Margin="0,4" Height="38"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1" Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -93,55 +109,58 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Text="{Binding SelectedRoom.RoomName}" 
-                       FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                       FontSize="26" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,12"/>
 
             <TextBox Grid.Row="1" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
-                     Width="200" Margin="0,0,0,10"
                      Style="{StaticResource SearchTextBoxStyle}"
-                     Visibility="{Binding IsRoomSelected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                     Visibility="{Binding IsRoomSelected, Converter={StaticResource BoolToVisibilityConverter}}"
+                     Margin="0,0,0,16"/>
 
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Devices}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" ItemWidth="170" ItemHeight="170"/>
+                            <WrapPanel Orientation="Horizontal" ItemWidth="180" ItemHeight="180"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:DeviceTileViewModel}">
-                            <Border Margin="6" Padding="12" BorderThickness="1" CornerRadius="12"
-                                    Background="#FEFEFE" Cursor="Hand"
+                            <Border Margin="6" Padding="14" BorderThickness="1" CornerRadius="12"
+                                    Background="White" Cursor="Hand"
                                     MouseLeftButtonDown="DeviceTile_Click">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.12"/>
+                                    <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.08"/>
                                 </Border.Effect>
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                                        <Setter Property="BorderBrush" Value="#E8E8E8"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding HasOpenTickets}" Value="True">
-                                                <Setter Property="BorderBrush" Value="Red"/>
+                                                <Setter Property="BorderBrush" Value="{StaticResource DangerBrush}"/>
                                                 <Setter Property="BorderThickness" Value="2"/>
                                             </DataTrigger>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#F5F5F5"/>
+                                                <Setter Property="Background" Value="#F8FBFF"/>
+                                                <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Icon}" FontSize="28" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"
+                                    <TextBlock Text="{Binding Icon}" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"
                                                HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"
-                                               ToolTip="{Binding Name}"/>
-                                    <TextBlock Text="{Binding StatusName}" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,2"
+                                               ToolTip="{Binding Name}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="{Binding StatusName}" FontSize="12" HorizontalAlignment="Center" Margin="0,6,0,4"
                                                Foreground="{Binding StatusName, Converter={StaticResource StatusToColorConverter}}"/>
-                                    <TextBlock Text=" !" Foreground="Red" FontWeight="Bold" FontSize="14"
-                                               Visibility="{Binding HasOpenTickets, Converter={StaticResource BoolToVisibilityConverter}}"
-                                               HorizontalAlignment="Center"/>
-                                    <TextBlock Text="{Binding AssignedTo}" FontSize="10" Foreground="Gray"
-                                               HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                               Visibility="{Binding AssignedTo, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Text="!" Foreground="{StaticResource DangerBrush}" FontWeight="Bold" FontSize="16"
+                                                   Visibility="{Binding HasOpenTickets, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                   Margin="0,0,4,0"/>
+                                        <TextBlock Text="{Binding AssignedTo}" FontSize="11" Foreground="{StaticResource TextMutedBrush}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Visibility="{Binding AssignedTo, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

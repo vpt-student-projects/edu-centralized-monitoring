@@ -3,43 +3,51 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:TechInventory.ViewModels"
         Title="Лента заявок"
-        Height="500" Width="900"
+        Height="520" Width="950"
         WindowStartupLocation="CenterOwner">
-    <Grid Margin="10">
+    <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Приоритет:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <ComboBox ItemsSource="{Binding PriorityOptions}" SelectedItem="{Binding SelectedPriority}" Width="100" Margin="0,0,15,0"/>
+        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="16" Margin="0,0,0,12">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08"/>
+            </Border.Effect>
+            <StackPanel>
+                <WrapPanel Orientation="Horizontal" Margin="0,0,0,8">
+                    <TextBlock Text="Приоритет:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <ComboBox ItemsSource="{Binding PriorityOptions}" SelectedItem="{Binding SelectedPriority}" 
+                              Width="110" Margin="0,0,16,0" Style="{StaticResource ComboBoxStyle}"/>
+                    <TextBlock Text="Статус:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <ComboBox ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding SelectedStatus}" 
+                              Width="110" Margin="0,0,16,0" Style="{StaticResource ComboBoxStyle}"/>
+                    <TextBlock Text="Кабинет:" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <ComboBox ItemsSource="{Binding RoomOptions}" SelectedValue="{Binding SelectedRoomId}"
+                              DisplayMemberPath="DisplayName" SelectedValuePath="RoomID" Width="110" Margin="0,0,16,0"
+                              Style="{StaticResource ComboBoxStyle}"/>
+                    <Button Content="Обновить" Command="{Binding RefreshCommand}" Width="90" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,16,0"/>
+                    <Button Content="Закрыть выбранную" Command="{Binding CloseTicketCommand}" Width="150" Style="{StaticResource AccentButtonStyle}"/>
+                </WrapPanel>
+                <CheckBox IsChecked="{Binding OnlyMyDevices}" Content="Только мои устройства" 
+                          Visibility="{Binding IsTeacher, Converter={StaticResource BoolToVisibilityConverter}}"
+                          Foreground="{StaticResource TextPrimaryBrush}" Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
 
-            <TextBlock Text="Статус:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <ComboBox ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding SelectedStatus}" Width="100" Margin="0,0,15,0"/>
-            <TextBlock Text="Кабинет:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <ComboBox ItemsSource="{Binding RoomOptions}" SelectedValue="{Binding SelectedRoomId}"
-          DisplayMemberPath="DisplayName" SelectedValuePath="RoomID" Width="100" Margin="0,0,15,0"/>
-            
-            <Button Content="Обновить" Command="{Binding RefreshCommand}" Width="80"/>
-            <Button Content="Закрыть выбранную" Command="{Binding CloseTicketCommand}" Width="120" Margin="10,0,0,0"/>
-            <CheckBox IsChecked="{Binding OnlyMyDevices}" Content="Только мои устройства" 
-  Visibility="{Binding IsTeacher, Converter={StaticResource BoolToVisibilityConverter}}"
-  Margin="0,0,0,5"/>
-        </StackPanel>
-        
-        <ListView Grid.Row="1" ItemsSource="{Binding Tickets}" SelectedItem="{Binding SelectedTicket}">
-            
+        <ListView Grid.Row="1" ItemsSource="{Binding Tickets}" SelectedItem="{Binding SelectedTicket}"
+                  Style="{StaticResource ListViewStyle}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Устройство" DisplayMemberBinding="{Binding DeviceName}" Width="100"/>
-                    <GridViewColumn Header="Кабинет" DisplayMemberBinding="{Binding RoomName}" Width="70"/>
-                    <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding Description}" Width="200"/>
-                    <GridViewColumn Header="Приоритет" DisplayMemberBinding="{Binding Priority}" Width="70"/>
-                    <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="80"/>
-                    <GridViewColumn Header="Создана" DisplayMemberBinding="{Binding CreatedAt}" Width="120"/>
+                    <GridViewColumn Header="Устройство" DisplayMemberBinding="{Binding DeviceName}" Width="110"/>
+                    <GridViewColumn Header="Кабинет" DisplayMemberBinding="{Binding RoomName}" Width="80"/>
+                    <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding Description}" Width="220"/>
+                    <GridViewColumn Header="Приоритет" DisplayMemberBinding="{Binding Priority}" Width="80"/>
+                    <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="90"/>
+                    <GridViewColumn Header="Создана" DisplayMemberBinding="{Binding CreatedAt}" Width="130"/>
                 </GridView>
             </ListView.View>
         </ListView>
     </Grid>
-</Window>   
+</Window>

@@ -39,7 +39,6 @@ namespace TechInventory.Views
             var newUser = new User
             {
                 Login = login,
-                // Хешируем пароль перед сохранением
                 PasswordHash = PasswordHasher.Hash(password),
                 FullName = string.IsNullOrWhiteSpace(fullName) ? null : fullName,
                 Role = "Teacher"

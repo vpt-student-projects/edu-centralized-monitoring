@@ -2,33 +2,38 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Справочники"
-        Height="400" Width="650"
+        Height="420" Width="680"
         WindowStartupLocation="CenterOwner">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>   
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
-            <TextBlock Text="Категория:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <ComboBox x:Name="CategoryCombo" Width="130" Margin="0,0,15,0"
-          SelectedValuePath="Tag">
-                <ComboBoxItem Tag="DeviceType">Тип устройства</ComboBoxItem>
-                <ComboBoxItem Tag="DeviceStatus">Статус устройства</ComboBoxItem>
-                <ComboBoxItem Tag="TicketStatus">Статус заявки</ComboBoxItem>
-            </ComboBox>
-            <Button Content="+ Добавить" Click="AddItem_Click" Width="100" Margin="0,0,10,0"/>
-            <Button Content="✎ Редактировать" Click="EditItem_Click" Width="110" Margin="0,0,10,0"/>
-            <Button Content="✕ Удалить" Click="DeleteItem_Click" Width="80" Background="LightCoral"/>
-        </StackPanel>
+        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="16" Margin="0,0,0,12">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08"/>
+            </Border.Effect>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Категория:" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <ComboBox x:Name="CategoryCombo" Width="150" Margin="0,0,16,0"
+                          SelectedValuePath="Tag" Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Tag="DeviceType">Тип устройства</ComboBoxItem>
+                    <ComboBoxItem Tag="DeviceStatus">Статус устройства</ComboBoxItem>
+                    <ComboBoxItem Tag="TicketStatus">Статус заявки</ComboBoxItem>
+                </ComboBox>
+                <Button Content="+ Добавить" Click="AddItem_Click" Width="100" Style="{StaticResource AccentButtonStyle}" Margin="0,0,10,0"/>
+                <Button Content="✎ Редактировать" Click="EditItem_Click" Width="130" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"/>
+                <Button Content="✕ Удалить" Click="DeleteItem_Click" Width="90" Style="{StaticResource DangerButtonStyle}"/>
+            </StackPanel>
+        </Border>
 
-        <ListView Grid.Row="1" ItemsSource="{Binding Items}" x:Name="ItemsListView">
+        <ListView Grid.Row="1" ItemsSource="{Binding Items}" x:Name="ItemsListView" Style="{StaticResource ListViewStyle}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Код" DisplayMemberBinding="{Binding ID}" Width="50"/>
-                    <GridViewColumn Header="Категория" DisplayMemberBinding="{Binding Category}" Width="130"/>
-                    <GridViewColumn Header="Наименование" DisplayMemberBinding="{Binding Value}" Width="200"/>
+                    <GridViewColumn Header="Код" DisplayMemberBinding="{Binding ID}" Width="60"/>
+                    <GridViewColumn Header="Категория" DisplayMemberBinding="{Binding Category}" Width="140"/>
+                    <GridViewColumn Header="Наименование" DisplayMemberBinding="{Binding Value}" Width="250"/>
                 </GridView>
             </ListView.View>
         </ListView>

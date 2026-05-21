@@ -2,38 +2,50 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Создать заявку"
-        Height="300" Width="450"
+        Height="320" Width="460"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
-    <Grid Margin="15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border Margin="16" Background="White" CornerRadius="12" Padding="24">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.1"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Устройство:" Margin="0,5"/>
-        <TextBlock Grid.Row="0" x:Name="DeviceNameText" HorizontalAlignment="Right" FontWeight="Bold"/>
+            <Border Grid.Row="0" Background="#F5F9FF" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Устройство:" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="DeviceNameText" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
-            <TextBlock Text="Приоритет:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <ComboBox x:Name="PriorityCombo" Width="120">
-                <ComboBoxItem Content="Высокий" Tag="1"/>
-                <ComboBoxItem Content="Средний" Tag="2" IsSelected="True"/>
-                <ComboBoxItem Content="Низкий" Tag="3"/>
-            </ComboBox>
-        </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+                <TextBlock Text="Приоритет:" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <ComboBox x:Name="PriorityCombo" Width="140" Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Content="Высокий" Tag="1"/>
+                    <ComboBoxItem Content="Средний" Tag="2" IsSelected="True"/>
+                    <ComboBoxItem Content="Низкий" Tag="3"/>
+                </ComboBox>
+            </StackPanel>
 
-        <StackPanel Grid.Row="2" Margin="0,10,0,0">
-            <TextBlock Text="Описание:"/>
-            <TextBox x:Name="DescriptionTextBox" TextWrapping="Wrap" 
-                     AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto"/>
-        </StackPanel>
+            <StackPanel Grid.Row="2" Margin="0,0,0,12">
+                <TextBlock Text="Описание:" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                <TextBox x:Name="DescriptionTextBox" TextWrapping="Wrap" 
+                         AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto"
+                         Style="{StaticResource TextBoxStyle}"/>
+            </StackPanel>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <Button Content="Создать" Click="CreateButton_Click" Width="80" Margin="0,0,10,0"/>
-            <Button Content="Отмена" Click="CancelButton_Click" Width="80"/>
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Создать" Click="CreateButton_Click" Width="90" Margin="0,0,10,0"
+                        Style="{StaticResource AccentButtonStyle}"/>
+                <Button Content="Отмена" Click="CancelButton_Click" Width="80"
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

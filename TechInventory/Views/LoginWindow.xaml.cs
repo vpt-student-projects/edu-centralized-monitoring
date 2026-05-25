@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using Inventory.Core;
 using TechInventory.Helpers;
@@ -12,29 +13,8 @@ namespace TechInventory.Views
         public LoginWindow()
         {
             InitializeComponent();
-            Loaded += async (s, e) => await InitializeServicesAsync();
-        }
-
-        private async Task InitializeServicesAsync()
-        {
-            try
-            {
-                string dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db");
-                string connectionString = $"Data Source={dbPath};Version=3;";
-
-                using (var conn = new System.Data.SQLite.SQLiteConnection(connectionString))
-                {
-                    await conn.OpenAsync();
-                    await conn.CloseAsync();
-                }
-
-                _services = new AppServices(connectionString);
-                ErrorTextBlock.Text = "";
-            }
-            catch (Exception ex)
-            {
-                ErrorTextBlock.Text = $"Ошибка открытия БД: {ex.Message}\nТип ошибки: {ex.GetType()}\n{ex.StackTrace}";
-            }
+            _services = App.Services; // Сервисы уже инициализированы в App
+            Loaded += (s, e) => ErrorTextBlock.Text = "";
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -60,9 +40,14 @@ namespace TechInventory.Views
                 var user = await _services.UserRepository.GetByLoginAsync(login, passwordHash);
                 if (user != null)
                 {
+                    // Сохраняем ID пользователя для автоматического входа
+                    string sessionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.dat");
+                    File.WriteAllText(sessionFile, user.UserID.ToString());
+
                     var mainWindow = new MainWindow(_services, user);
                     mainWindow.Show();
                     this.Close();
+
                     Logger.Log($"Пользователь {user.Login} вошёл");
                 }
                 else

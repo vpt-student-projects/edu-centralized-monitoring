@@ -82,6 +82,38 @@
             </Setter>
         </Style>
 
+        <!-- Стиль ToggleButton для меню – похож на боковую кнопку -->
+        <Style x:Key="MenuToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="bg" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#E8F0FE"/>
+                                <Setter Property="Foreground" Value="#0078D4"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#E8F0FE"/>
+                                <Setter Property="Foreground" Value="#0078D4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style TargetType="TreeViewItem">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="Padding" Value="4,3"/>
@@ -139,12 +171,19 @@
 
                 <StackPanel Grid.Row="2" Margin="8,0,8,14">
                     <Separator Margin="0,6,0,8" Background="#E5E7EB"/>
-                    <Button Content="📋  Лента заявок" x:Name="TicketsBtn" Click="TicketsButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
-                    <Button Content="➕  Создать заявку" x:Name="CreateTicketFromMainButton" Click="CreateTicketFromMain_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
-                    <Button Content="📊  Отчёты" Click="ReportsButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
-                    <Button Content="📁  Кабинеты" x:Name="RoomsButton" Click="RoomsButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
-                    <Button Content="📚  Справочники" Click="DictionaryButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
-                    <Button Content="👤  Пользователи" x:Name="UsersButton" Click="UsersButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                    <ToggleButton x:Name="MenuToggle" Content="☰  Меню" 
+                                  Style="{StaticResource MenuToggleStyle}" 
+                                  IsChecked="False" Margin="0,2"/>
+                    <StackPanel x:Name="ButtonPanel"
+                                Visibility="{Binding IsChecked, ElementName=MenuToggle, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Button Content="📋  Лента заявок" x:Name="TicketsBtn" Click="TicketsButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="➕  Создать заявку" x:Name="CreateTicketFromMainButton" Click="CreateTicketFromMain_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="📊  Отчёты" Click="ReportsButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="📁  Кабинеты" x:Name="RoomsButton" Click="RoomsButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="📚  Справочники" Click="DictionaryButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="👤  Пользователи" x:Name="UsersButton" Click="UsersButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="🚪  Выйти" Click="LogoutButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>

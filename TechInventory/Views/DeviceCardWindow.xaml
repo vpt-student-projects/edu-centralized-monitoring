@@ -154,7 +154,7 @@
                                Foreground="#374151" Margin="0,0,8,0"/>
                     <ComboBox ItemsSource="{Binding AvailableUsers}" SelectedValue="{Binding SelectedUserId}"
                               DisplayMemberPath="FullName" SelectedValuePath="UserID"
-                              Width="180" Height="34" FontFamily="Segoe UI" FontSize="13"
+                              Width="190" Height="34" FontFamily="Segoe UI" FontSize="13"
                               BorderBrush="#D0D5DD" BorderThickness="1"/>
                     <Button Content="Сохранить" Command="{Binding AssignUserCommand}"
                             Style="{StaticResource SaveButton}" Width="90" Margin="8,0,0,0"/>

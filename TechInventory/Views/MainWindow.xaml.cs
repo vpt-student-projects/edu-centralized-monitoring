@@ -92,5 +92,25 @@ namespace TechInventory.Views
             dictWindow.Owner = this;
             dictWindow.ShowDialog();
         }
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "Вы действительно хотите выйти из системы?",
+                "Подтверждение выхода",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                string sessionFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.dat");
+                if (System.IO.File.Exists(sessionFile))
+                    System.IO.File.Delete(sessionFile);
+
+                MainWindow.CurrentUser = null;
+                var loginWindow = new LoginWindow();
+                loginWindow.Show();
+                this.Close();
+            }
+        }
     }
 }

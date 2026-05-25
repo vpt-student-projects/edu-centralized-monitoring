@@ -3,81 +3,235 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:TechInventory.ViewModels"
         Title="Карточка устройства"
-        Height="500" Width="650"
+        Height="560" Width="700"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
+        Background="#F0F2F5"
+        FontFamily="Segoe UI"
         Loaded="Window_Loaded">
-    <Grid Margin="12">
+
+    <Window.Resources>
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#0078D4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bg" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#106EBE"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#005A9E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#D0D5DD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bg"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="Background" Value="#F3F4F6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SaveButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style x:Key="ModernTabControl" TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+
+        <Style x:Key="ModernTabItem" TargetType="TabItem">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="bg" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                            <ContentPresenter ContentSource="Header"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bg" Property="BorderBrush" Value="#0078D4"/>
+                                <Setter Property="Foreground" Value="#0078D4"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#374151"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,12">
+        <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="20,16" Margin="0,0,0,12"
+                BorderBrush="#E5E7EB" BorderThickness="1">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.08"/>
+                <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.07" Color="#000"/>
             </Border.Effect>
             <StackPanel>
-                <TextBlock Text="{Binding Device.Name}" FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                    <TextBlock Text="Тип: " Foreground="{StaticResource TextSecondaryBrush}"/>
-                    <TextBlock Text="{Binding TypeName}" FontWeight="SemiBold"/>
-                    <TextBlock Text="  |  Статус: " Foreground="{StaticResource TextSecondaryBrush}"/>
-                    <TextBlock Text="{Binding StatusName}" Foreground="{Binding StatusName, Converter={StaticResource StatusToColorConverter}}" FontWeight="SemiBold"/>
-                    <TextBlock Text="  |  Закреплён: " Foreground="{StaticResource TextSecondaryBrush}"/>
-                    <TextBlock Text="{Binding AssignedUserName}" FontWeight="SemiBold"/>
-                </StackPanel>
-                <TextBlock Text="{Binding Device.Specs}" Margin="0,6,0,0" Foreground="{StaticResource TextSecondaryBrush}" FontStyle="Italic"/>
+                <TextBlock Text="{Binding Device.Name, StringFormat='🖥  {0}'}" FontSize="20" FontWeight="SemiBold" Foreground="#111827"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,0" 
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Border Background="#F0F2F5" CornerRadius="6" Padding="8,4" Margin="0,0,8,0">
+                        <TextBlock FontSize="12" Foreground="#374151">
+                            <Run Text="Тип: "/><Run Text="{Binding TypeName}" FontWeight="Medium"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="#F0F2F5" CornerRadius="6" Padding="8,4" Margin="0,0,8,0">
+                        <TextBlock FontSize="12">
+                            <Run Text="{Binding StatusName}"
+                                 Foreground="{Binding StatusName, Converter={StaticResource StatusToColorConverter}}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="#F0F2F5" CornerRadius="6" Padding="8,4">
+                        <TextBlock FontSize="12" Foreground="#374151">
+                            <Run Text="Закреплён: "/><Run Text="{Binding AssignedUserName}" FontWeight="Medium"/>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+
+                <TextBlock Text="{Binding Device.Specs, StringFormat='Характеристики: {0}'}" FontSize="13"
+                           Foreground="#4B5563" TextWrapping="Wrap" Margin="0,8,0,0"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0"
                             Visibility="{Binding CanAssign, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock Text="Ответственный:" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <TextBlock Text="Ответственный:" VerticalAlignment="Center" FontSize="13"
+                               Foreground="#374151" Margin="0,0,8,0"/>
                     <ComboBox ItemsSource="{Binding AvailableUsers}" SelectedValue="{Binding SelectedUserId}"
-                              DisplayMemberPath="FullName" SelectedValuePath="UserID" Width="160"
-                              Style="{StaticResource ComboBoxStyle}"/>
-                    <Button Content="Назначить" Command="{Binding AssignUserCommand}" Width="90" Margin="8,0,0,0"
-                            Style="{StaticResource AccentButtonStyle}"/>
+                              DisplayMemberPath="FullName" SelectedValuePath="UserID"
+                              Width="180" Height="34" FontFamily="Segoe UI" FontSize="13"
+                              BorderBrush="#D0D5DD" BorderThickness="1"/>
+                    <Button Content="Сохранить" Command="{Binding AssignUserCommand}"
+                            Style="{StaticResource SaveButton}" Width="90" Margin="8,0,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Border>
 
-        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
-            <TabItem Header="Перемещения" Style="{StaticResource TabItemStyle}">
-                <ListView ItemsSource="{Binding Movements}" Style="{StaticResource ListViewStyle}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Дата" DisplayMemberBinding="{Binding MoveDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" Width="150"/>
-                            <GridViewColumn Header="Из кабинета" DisplayMemberBinding="{Binding FromRoom}" Width="100"/>
-                            <GridViewColumn Header="В кабинет" DisplayMemberBinding="{Binding ToRoom}" Width="100"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </TabItem>
-            <TabItem Header="Заявки" Style="{StaticResource TabItemStyle}">
-                <ListView ItemsSource="{Binding Tickets}" Style="{StaticResource ListViewStyle}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding Description}" Width="200"/>
-                            <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="90"/>
-                            <GridViewColumn Header="Приоритет" DisplayMemberBinding="{Binding Priority}" Width="80"/>
-                            <GridViewColumn Header="Кабинет" DisplayMemberBinding="{Binding RoomName}" Width="80"/>
-                            <GridViewColumn Header="Создана" DisplayMemberBinding="{Binding CreatedAt}" Width="130"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </TabItem>
-        </TabControl>
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="0,0,0,4" Margin="0,0,0,12"
+                BorderBrush="#E5E7EB" BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.07" Color="#000"/>
+            </Border.Effect>
+            <TabControl Style="{StaticResource ModernTabControl}">
+                <TabItem Header="Перемещения" Style="{StaticResource ModernTabItem}">
+                    <ListView ItemsSource="{Binding Movements}" BorderThickness="0"
+                              AlternationCount="2" FontFamily="Segoe UI" FontSize="13">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="4,5"/>
+                                <Style.Triggers>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="#F9FAFB"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#EFF6FF"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Дата" DisplayMemberBinding="{Binding MoveDate, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}" Width="150"/>
+                                <GridViewColumn Header="Из кабинета" DisplayMemberBinding="{Binding FromRoom}" Width="120"/>
+                                <GridViewColumn Header="В кабинет" DisplayMemberBinding="{Binding ToRoom}" Width="120"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </TabItem>
+                <TabItem Header="Заявки" Style="{StaticResource ModernTabItem}">
+                    <ListView ItemsSource="{Binding Tickets}" BorderThickness="0"
+                              AlternationCount="2" FontFamily="Segoe UI" FontSize="13">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="4,5"/>
+                                <Style.Triggers>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="#F9FAFB"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#EFF6FF"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding Description}" Width="200"/>
+                                <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="90"/>
+                                <GridViewColumn Header="Приоритет" DisplayMemberBinding="{Binding Priority}" Width="90"/>
+                                <GridViewColumn Header="Кабинет" DisplayMemberBinding="{Binding RoomName}" Width="80"/>
+                                <GridViewColumn Header="Создана" DisplayMemberBinding="{Binding CreatedAt}" Width="130"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </TabItem>
+            </TabControl>
+        </Border>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="Переместить" Command="{Binding MoveDeviceCommand}" Width="110" Margin="0,0,8,0"
-                    Style="{StaticResource AccentButtonStyle}"
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="📦  Переместить" Command="{Binding MoveDeviceCommand}"
+                    Style="{StaticResource SecondaryButton}" Width="140" Margin="0,0,8,0"
                     Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            <Button Content="Создать заявку" Command="{Binding CreateTicketCommand}" Width="130" Margin="0,0,8,0"
-                    Style="{StaticResource AccentButtonStyle}"
+            <Button Content="🔧  Создать заявку" Command="{Binding CreateTicketCommand}"
+                    Style="{StaticResource PrimaryButton}" Width="150" Margin="0,0,8,0"
                     Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            <Button Content="Закрыть" Click="CloseButton_Click" Width="90"
-                    Style="{StaticResource SecondaryButtonStyle}"/>
+            <Button Content="Закрыть" Click="CloseButton_Click"
+                    Style="{StaticResource SecondaryButton}" Width="90"/>
         </StackPanel>
     </Grid>
 </Window>

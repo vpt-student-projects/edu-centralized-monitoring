@@ -100,7 +100,8 @@ def generate_tickets_report(conn, output_dir):
         ORDER BY t.CreatedAt DESC
     """
     df = pd.read_sql_query(query, conn)
-    df['CreatedAt'] = pd.to_datetime(df['CreatedAt'])
+
+    df['CreatedAt'] = pd.to_datetime(df['CreatedAt'].str[:19], format='%Y-%m-%d %H:%M:%S', errors='coerce')
 
     stats = {
         'Всего заявок': len(df),
@@ -120,11 +121,15 @@ def generate_tickets_report(conn, output_dir):
     print(f"Отчёт по заявкам сохранён: {output_path}")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Использование: python report_generator.py <тип_отчёта> <путь_к_БД> [выходная_папка]")
-        sys.exit(1)
+    try:
+        if len(sys.argv) < 3:
+            print("Использование: python report_generator.py <тип_отчёта> <путь_к_БД> [выходная_папка]")
+            sys.exit(1)
 
-    report_type = sys.argv[1]
-    db_path = sys.argv[2]
-    output_dir = sys.argv[3] if len(sys.argv) > 3 else os.path.dirname(db_path)
-    generate_report(report_type, db_path, output_dir)
+        report_type = sys.argv[1]
+        db_path = sys.argv[2]
+        output_dir = sys.argv[3] if len(sys.argv) > 3 else os.path.dirname(db_path)
+        generate_report(report_type, db_path, output_dir)
+    except Exception as e:
+        traceback.print_exc()
+        sys.exit(1)

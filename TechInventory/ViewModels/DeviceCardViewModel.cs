@@ -162,19 +162,19 @@ namespace TechInventory.ViewModels
 
                 try
                 {
+                    // Загружаем словарь статусов заявок
+                    var statusDict = new Dictionary<int, string>();
+                    var statusItems = await _services.DictionaryRepository.GetByCategoryAsync("TicketStatus");
+                    foreach (var si in statusItems)
+                        statusDict[si.ID] = si.Value;
+
                     var tickets = await _services.TicketRepository.GetByDeviceAsync(_deviceId);
                     Tickets.Clear();
                     if (tickets != null)
                     {
                         foreach (var t in tickets)
                         {
-                            string ticketStatus = t.StatusID switch
-                            {
-                                1 => "Новая",
-                                2 => "В работе",
-                                3 => "Завершена",
-                                _ => "?"
-                            };
+                            string ticketStatus = statusDict.TryGetValue(t.StatusID, out var s) ? s : "?";
 
                             string roomName = "–";
                             if (t.RoomID.HasValue)

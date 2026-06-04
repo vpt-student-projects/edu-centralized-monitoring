@@ -12,5 +12,5 @@ public interface ITicketRepository
     Task<IEnumerable<Ticket>> GetTicketsByRoomAsync(int roomId);
     Task UpdateAsync(Ticket ticket);
     Task<IEnumerable<Ticket>> GetByDeviceAsync(int deviceId);
-    Task<IEnumerable<Ticket>> GetAllTicketsAsync(); // новый метод
+    Task<IEnumerable<Ticket>> GetAllTicketsAsync();
 }

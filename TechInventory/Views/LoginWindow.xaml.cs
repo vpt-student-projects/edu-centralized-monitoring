@@ -13,7 +13,7 @@ namespace TechInventory.Views
         public LoginWindow()
         {
             InitializeComponent();
-            _services = App.Services; // Сервисы уже инициализированы в App
+            _services = App.Services; 
             Loaded += (s, e) => ErrorTextBlock.Text = "";
         }
 
@@ -40,7 +40,6 @@ namespace TechInventory.Views
                 var user = await _services.UserRepository.GetByLoginAsync(login, passwordHash);
                 if (user != null)
                 {
-                    // Сохраняем ID пользователя для автоматического входа
                     string sessionFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.dat");
                     File.WriteAllText(sessionFile, user.UserID.ToString());
 

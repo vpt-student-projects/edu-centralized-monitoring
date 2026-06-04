@@ -17,12 +17,14 @@ namespace TechInventory.ViewModels
         private readonly User? _currentUser;
         private HashSet<int> _userDeviceIds = new();
         public bool IsTeacher => _currentUser?.Role == "Teacher";
+
         private bool _onlyMyDevices;
         public bool OnlyMyDevices
         {
             get => _onlyMyDevices;
             set { SetProperty(ref _onlyMyDevices, value); ApplyFilters(); }
         }
+
         public ObservableCollection<TicketListItem> Tickets { get; } = new();
         public ObservableCollection<string> PriorityOptions { get; } = new() { "Все", "Высокий", "Средний", "Низкий" };
         public ObservableCollection<string> StatusOptions { get; } = new() { "Все", "Новая", "В работе", "Завершена" };
@@ -74,6 +76,13 @@ namespace TechInventory.ViewModels
         {
             try
             {
+                // Словарь статусов (ID -> название)
+                var statusDict = new Dictionary<int, string>();
+                var statusItems = await _services.DictionaryRepository.GetByCategoryAsync("TicketStatus");
+                foreach (var si in statusItems)
+                    statusDict[si.ID] = si.Value;
+
+                // ID устройств преподавателя
                 if (IsTeacher && _currentUser != null)
                 {
                     var devices = await _services.DeviceRepository.GetAllAsync();
@@ -93,24 +102,18 @@ namespace TechInventory.ViewModels
 
                 foreach (var ticket in tickets)
                 {
+                    string statusName = statusDict.TryGetValue(ticket.StatusID, out var s) ? s : "?";
+
                     var item = new TicketListItem
                     {
                         TicketID = ticket.TicketID,
                         DeviceID = ticket.DeviceID,
                         Description = ticket.Description ?? "",
                         CreatedAt = ticket.CreatedAt.ToString("g"),
-                        RoomID = ticket.RoomID
+                        RoomID = ticket.RoomID,
+                        Status = statusName,
+                        Priority = ticket.Priority switch { 1 => "Высокий", 2 => "Средний", 3 => "Низкий", _ => "?" }
                     };
-
-                    item.Status = ticket.StatusID switch
-                    {
-                        1 => "Новая",
-                        2 => "В работе",
-                        3 => "Завершена",
-                        _ => "?"
-                    };
-
-                    item.Priority = ticket.Priority switch { 1 => "Высокий", 2 => "Средний", 3 => "Низкий", _ => "?" };
 
                     try
                     {
@@ -134,6 +137,7 @@ namespace TechInventory.ViewModels
                     _allTickets.Add(item);
                 }
 
+                // Список комнат для фильтра
                 var rooms = await _services.RoomRepository.GetAllAsync();
                 RoomOptions.Clear();
                 RoomOptions.Add(new RoomFilterItem { RoomID = 0, DisplayName = "Все" });

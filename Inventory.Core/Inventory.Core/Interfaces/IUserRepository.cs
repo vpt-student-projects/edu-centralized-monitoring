@@ -9,7 +9,7 @@ public interface IUserRepository
     Task<User?> GetByLoginAsync(string login, string passwordHash);
     Task<User?> GetByIdAsync(int userId);
     Task<List<User>> GetAllAsync();
-    Task AddAsync(User user);              // новый
-    Task UpdateAsync(User user);           // новый
-    Task DeleteAsync(int userId);          // новый
+    Task AddAsync(User user);             
+    Task UpdateAsync(User user);           
+    Task DeleteAsync(int userId);          
 }

@@ -10,7 +10,7 @@ public class Device
 
     [Required]
     [MaxLength(50)]
-    public string Name { get; set; } = string.Empty;           // gk_220_1
+    public string Name { get; set; } = string.Empty;           
 
     [Required]
     public int TypeID { get; set; }

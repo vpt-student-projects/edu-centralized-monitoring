@@ -11,5 +11,5 @@ public interface IDeviceRepository
     Task<IEnumerable<Device>> GetDevicesWithOpenTicketsAsync();
     Task UpdateAsync(Device device);
     Task UpdateStatusAsync(int deviceId, int statusId);
-    Task<List<Device>> GetAllAsync();               // новый метод
+    Task<List<Device>> GetAllAsync();               
 }

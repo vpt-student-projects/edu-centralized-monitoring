@@ -20,9 +20,7 @@ public class DeviceRepository : BaseRepository, IDeviceRepository
 
         using var reader = await cmd.ExecuteReaderAsync();
         if (await reader.ReadAsync())
-        {
             return MapDevice((SQLiteDataReader)reader);
-        }
         return null;
     }
 
@@ -47,11 +45,16 @@ public class DeviceRepository : BaseRepository, IDeviceRepository
         using var conn = CreateConnection();
         await conn.OpenAsync();
         using var cmd = new SQLiteCommand(
-            @"UPDATE Devices SET CurrentRoomID = @roomId, PositionInRoom = @position, StatusID = @statusId 
+            @"UPDATE Devices 
+              SET CurrentRoomID = @roomId, 
+                  PositionInRoom = @position, 
+                  StatusID = @statusId,
+                  AssignedToUserID = @userId
               WHERE DeviceID = @id", conn);
         cmd.Parameters.AddWithValue("@roomId", device.CurrentRoomID);
         cmd.Parameters.AddWithValue("@position", (object?)device.PositionInRoom ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@statusId", device.StatusID);
+        cmd.Parameters.AddWithValue("@userId", (object?)device.AssignedToUserID ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@id", device.DeviceID);
         await cmd.ExecuteNonQueryAsync();
     }
@@ -60,7 +63,8 @@ public class DeviceRepository : BaseRepository, IDeviceRepository
     {
         using var conn = CreateConnection();
         await conn.OpenAsync();
-        using var cmd = new SQLiteCommand("UPDATE Devices SET StatusID = @status WHERE DeviceID = @id", conn);
+        using var cmd = new SQLiteCommand(
+            "UPDATE Devices SET StatusID = @status WHERE DeviceID = @id", conn);
         cmd.Parameters.AddWithValue("@status", statusId);
         cmd.Parameters.AddWithValue("@id", deviceId);
         await cmd.ExecuteNonQueryAsync();
@@ -71,6 +75,7 @@ public class DeviceRepository : BaseRepository, IDeviceRepository
         var devices = new List<Device>();
         using var conn = CreateConnection();
         await conn.OpenAsync();
+        // Используем актуальный ClosedStatusId = 7
         using var cmd = new SQLiteCommand(
             @"SELECT DISTINCT d.* FROM Devices d 
               INNER JOIN Tickets t ON d.DeviceID = t.DeviceID 

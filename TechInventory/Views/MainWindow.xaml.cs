@@ -19,6 +19,17 @@ namespace TechInventory.Views
             CurrentUser = currentUser;
             DataContext = new MainViewModel(services);
 
+            // Отображаем пользователя в шапке
+            CurrentUserName.Text = string.IsNullOrWhiteSpace(currentUser.FullName)
+                ? currentUser.Login
+                : $"{currentUser.FullName} ({currentUser.Login})";
+            CurrentUserRole.Text = currentUser.Role switch
+            {
+                "Admin" => "Администратор",
+                "Teacher" => "Преподаватель",
+                _ => currentUser.Role
+            };
+
             if (currentUser.Role != "Admin")
             {
                 UsersButton.Visibility = Visibility.Collapsed;
@@ -92,6 +103,7 @@ namespace TechInventory.Views
             dictWindow.Owner = this;
             dictWindow.ShowDialog();
         }
+
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = MessageBox.Show(

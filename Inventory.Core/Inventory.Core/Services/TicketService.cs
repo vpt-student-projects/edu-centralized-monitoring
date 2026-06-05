@@ -40,7 +40,7 @@ public class TicketService : ITicketService
             Description = description.Trim(),
             Priority = priority,
             StatusID = NewStatusId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now
         };
 
         await _ticketRepository.AddAsync(ticket);
@@ -55,7 +55,7 @@ public class TicketService : ITicketService
             throw new BusinessException($"Заявка с ID {ticketId} не найдена");
 
         ticket.StatusID = ClosedStatusId;
-        ticket.ClosedAt = DateTime.UtcNow;
+        ticket.ClosedAt = DateTime.Now;
         if (!string.IsNullOrEmpty(resolution))
             ticket.Description += $"\n\nРешение: {resolution}";
 

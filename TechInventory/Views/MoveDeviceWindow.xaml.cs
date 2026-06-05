@@ -77,7 +77,7 @@ namespace TechInventory.Views
                     OldRoomID = CurrentDevice.CurrentRoomID,
                     NewRoomID = SelectedRoomId,
                     Reason = string.IsNullOrWhiteSpace(Reason) ? null : Reason,
-                    MoveDate = DateTime.UtcNow
+                    MoveDate = DateTime.Now,
                 };
                 await _movementRepo.AddMovementAsync(movement);
 

@@ -33,7 +33,7 @@ public class DeviceService : IDeviceService
             OldRoomID = device.CurrentRoomID,
             NewRoomID = newRoomId,
             Reason = reason,
-            MoveDate = DateTime.UtcNow
+            MoveDate = DateTime.Now,
         };
 
         await _movementRepository.AddMovementAsync(movement);

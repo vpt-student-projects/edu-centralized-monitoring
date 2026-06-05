@@ -30,8 +30,7 @@ public class AppServices
         RoomRepository = new RoomRepository(connectionString);
         DictionaryRepository = new DictionaryRepository(connectionString);
         UserRepository = new UserRepository(connectionString);
-
-        MovementRepository = movementRepository; // <-- исправлено
+        MovementRepository = movementRepository;
 
         DeviceService = new DeviceService(DeviceRepository, movementRepository);
         TicketService = new TicketService(TicketRepository, DeviceService);
@@ -55,6 +54,9 @@ public class AppServices
 
     public static async Task<AppServices> InitializeAsync(string connectionString)
     {
+        // Сначала выполняем миграцию БД
+        await DatabaseMigrator.MigrateAsync(connectionString);
+
         var services = new AppServices(connectionString);
         bool isConnected = await services.TestConnectionAsync();
         if (!isConnected)

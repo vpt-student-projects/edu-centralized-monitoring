@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Inventory.Core;
+using Inventory.Core.Models;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Inventory.Core;
-using Inventory.Core.Models;
 using TechInventory.Helpers;
 using TechInventory.Views;
 
@@ -20,11 +21,12 @@ namespace TechInventory.ViewModels
         private string _typeName = "";
         private string _assignedUserName = "нет";
         private bool _isLoading;
+
         public bool IsAdmin { get; }
         public ObservableCollection<MovementViewModel> Movements { get; } = new();
         public ObservableCollection<TicketViewModel> Tickets { get; } = new();
-
         public ObservableCollection<User> AvailableUsers { get; } = new();
+
         private int? _selectedUserId;
         public int? SelectedUserId
         {
@@ -73,9 +75,13 @@ namespace TechInventory.ViewModels
             _services = services;
             _deviceId = deviceId;
             IsAdmin = MainWindow.CurrentUser?.Role == "Admin";
-            MoveDeviceCommand = new RelayCommand(async _ => await MoveDevice(), _ => Device != null);
-            CreateTicketCommand = new RelayCommand(async _ => await CreateTicket(), _ => Device != null);
-            AssignUserCommand = new RelayCommand(async _ => await AssignUser(), _ => CanAssign && SelectedUserId.HasValue);
+            MoveDeviceCommand = new RelayCommand(
+                async _ => await MoveDevice(), _ => Device != null);
+            CreateTicketCommand = new RelayCommand(
+                async _ => await CreateTicket(), _ => Device != null);
+            AssignUserCommand = new RelayCommand(
+                async _ => await AssignUser(),
+                _ => CanAssign && SelectedUserId.HasValue);
         }
 
         public async Task LoadAsync()
@@ -105,7 +111,8 @@ namespace TechInventory.ViewModels
                 {
                     try
                     {
-                        var user = await _services.UserRepository.GetByIdAsync(Device.AssignedToUserID.Value);
+                        var user = await _services.UserRepository
+                            .GetByIdAsync(Device.AssignedToUserID.Value);
                         AssignedUserName = user?.FullName ?? user?.Login ?? "нет";
                     }
                     catch { AssignedUserName = "нет"; }
@@ -119,13 +126,17 @@ namespace TechInventory.ViewModels
                 {
                     var allUsers = await _services.UserRepository.GetAllAsync();
                     AvailableUsers.Clear();
-                    foreach (var u in allUsers.Where(u => u.Role == "Teacher" || u.Role == "Admin"))
+                    foreach (var u in allUsers.Where(
+                        u => u.Role == "Teacher" || u.Role == "Admin"))
                         AvailableUsers.Add(u);
                     SelectedUserId = Device.AssignedToUserID;
                 }
+
+                // Перемещения
                 try
                 {
-                    var movements = await _services.MovementRepository.GetByDeviceAsync(_deviceId);
+                    var movements = await _services.MovementRepository
+                        .GetByDeviceAsync(_deviceId);
                     Movements.Clear();
                     if (movements != null)
                     {
@@ -135,13 +146,15 @@ namespace TechInventory.ViewModels
                             string toRoom = m.NewRoomID.ToString();
                             try
                             {
-                                var oldRoom = await _services.RoomRepository.GetByIdAsync(m.OldRoomID);
+                                var oldRoom = await _services.RoomRepository
+                                    .GetByIdAsync(m.OldRoomID);
                                 if (oldRoom != null) fromRoom = oldRoom.Name;
                             }
                             catch { }
                             try
                             {
-                                var newRoom = await _services.RoomRepository.GetByIdAsync(m.NewRoomID);
+                                var newRoom = await _services.RoomRepository
+                                    .GetByIdAsync(m.NewRoomID);
                                 if (newRoom != null) toRoom = newRoom.Name;
                             }
                             catch { }
@@ -160,28 +173,32 @@ namespace TechInventory.ViewModels
                     ShowError($"Ошибка загрузки перемещений: {ex.Message}");
                 }
 
+                // Заявки — статусы из словаря БД
                 try
                 {
-                    // Загружаем словарь статусов заявок
                     var statusDict = new Dictionary<int, string>();
-                    var statusItems = await _services.DictionaryRepository.GetByCategoryAsync("TicketStatus");
+                    var statusItems = await _services.DictionaryRepository
+                        .GetByCategoryAsync("TicketStatus");
                     foreach (var si in statusItems)
                         statusDict[si.ID] = si.Value;
 
-                    var tickets = await _services.TicketRepository.GetByDeviceAsync(_deviceId);
+                    var tickets = await _services.TicketRepository
+                        .GetByDeviceAsync(_deviceId);
                     Tickets.Clear();
                     if (tickets != null)
                     {
                         foreach (var t in tickets)
                         {
-                            string ticketStatus = statusDict.TryGetValue(t.StatusID, out var s) ? s : "?";
+                            string ticketStatus = statusDict.TryGetValue(
+                                t.StatusID, out var s) ? s : $"Статус {t.StatusID}";
 
                             string roomName = "–";
                             if (t.RoomID.HasValue)
                             {
                                 try
                                 {
-                                    var room = await _services.RoomRepository.GetByIdAsync(t.RoomID.Value);
+                                    var room = await _services.RoomRepository
+                                        .GetByIdAsync(t.RoomID.Value);
                                     roomName = room?.Name ?? "–";
                                 }
                                 catch { }
@@ -192,7 +209,12 @@ namespace TechInventory.ViewModels
                                 TicketID = t.TicketID,
                                 Description = t.Description ?? "",
                                 Status = ticketStatus,
-                                Priority = t.Priority switch { 1 => "Высокий", 2 => "Средний", _ => "Низкий" },
+                                Priority = t.Priority switch
+                                {
+                                    1 => "Высокий",
+                                    2 => "Средний",
+                                    _ => "Низкий"
+                                },
                                 RoomName = roomName,
                                 CreatedAt = t.CreatedAt.ToString("g")
                             });
@@ -227,35 +249,33 @@ namespace TechInventory.ViewModels
         private void ShowError(string message)
         {
             Application.Current.Dispatcher.Invoke(() =>
-                MessageBox.Show(message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error));
+                MessageBox.Show(message, "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error));
         }
 
         private async Task MoveDevice()
         {
             if (Device == null) return;
-
             var moveWindow = new MoveDeviceWindow(
                 Device,
                 _services.MovementRepository,
                 _services.DeviceRepository,
                 _services.RoomRepository);
-
-            moveWindow.Owner = Application.Current.Windows.OfType<DeviceCardWindow>().FirstOrDefault();
+            moveWindow.Owner = Application.Current.Windows
+                .OfType<DeviceCardWindow>().FirstOrDefault();
             if (moveWindow.ShowDialog() == true)
-            {
                 await LoadDeviceDataAsync();
-            }
         }
 
         private async Task CreateTicket()
         {
             if (Device == null) return;
-            var ticketWindow = new CreateTicketWindow(_services.TicketService, Device.DeviceID, Device.Name);
-            ticketWindow.Owner = Application.Current.Windows.OfType<DeviceCardWindow>().FirstOrDefault();
+            var ticketWindow = new CreateTicketWindow(
+                _services.TicketService, Device.DeviceID, Device.Name);
+            ticketWindow.Owner = Application.Current.Windows
+                .OfType<DeviceCardWindow>().FirstOrDefault();
             if (ticketWindow.ShowDialog() == true)
-            {
                 await LoadDeviceDataAsync();
-            }
         }
 
         private async Task AssignUser()
@@ -264,10 +284,12 @@ namespace TechInventory.ViewModels
             Device.AssignedToUserID = SelectedUserId.Value;
             await _services.DeviceRepository.UpdateAsync(Device);
 
-            var user = AvailableUsers.FirstOrDefault(u => u.UserID == SelectedUserId.Value);
+            var user = AvailableUsers.FirstOrDefault(
+                u => u.UserID == SelectedUserId.Value);
             AssignedUserName = user?.FullName ?? user?.Login ?? "нет";
         }
     }
+
     public class TicketViewModel : ViewModelBase
     {
         public int TicketID { get; set; }

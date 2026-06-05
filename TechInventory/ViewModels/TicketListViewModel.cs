@@ -16,6 +16,7 @@ namespace TechInventory.ViewModels
         private readonly AppServices _services;
         private readonly User? _currentUser;
         private HashSet<int> _userDeviceIds = new();
+
         public bool IsTeacher => _currentUser?.Role == "Teacher";
 
         private bool _onlyMyDevices;
@@ -26,8 +27,10 @@ namespace TechInventory.ViewModels
         }
 
         public ObservableCollection<TicketListItem> Tickets { get; } = new();
-        public ObservableCollection<string> PriorityOptions { get; } = new() { "Все", "Высокий", "Средний", "Низкий" };
-        public ObservableCollection<string> StatusOptions { get; } = new() { "Все", "Новая", "В работе", "Завершена" };
+        public ObservableCollection<string> PriorityOptions { get; } =
+            new() { "Все", "Высокий", "Средний", "Низкий" };
+        public ObservableCollection<string> StatusOptions { get; } =
+            new() { "Все", "Новая", "В работе", "Завершена" };
         public ObservableCollection<RoomFilterItem> RoomOptions { get; } = new();
 
         private string _selectedPriority = "Все";
@@ -68,29 +71,37 @@ namespace TechInventory.ViewModels
             _services = services;
             _currentUser = currentUser;
             RefreshCommand = new RelayCommand(async _ => await LoadTicketsAsync());
-            CloseTicketCommand = new RelayCommand(async _ => await CloseSelectedTicket(), _ => SelectedTicket != null);
+            CloseTicketCommand = new RelayCommand(
+                async _ => await CloseSelectedTicket(),
+                _ => SelectedTicket != null);
             _ = LoadTicketsAsync();
+        }
+
+        // Публичный метод для вызова из окна при активации
+        public async Task RefreshAsync()
+        {
+            await LoadTicketsAsync();
         }
 
         private async Task LoadTicketsAsync()
         {
             try
             {
-                // Словарь статусов (ID -> название)
+                // Загружаем словарь статусов заявок из БД
                 var statusDict = new Dictionary<int, string>();
-                var statusItems = await _services.DictionaryRepository.GetByCategoryAsync("TicketStatus");
+                var statusItems = await _services.DictionaryRepository
+                    .GetByCategoryAsync("TicketStatus");
                 foreach (var si in statusItems)
                     statusDict[si.ID] = si.Value;
 
-                // ID устройств преподавателя
+                // Список устройств преподавателя
                 if (IsTeacher && _currentUser != null)
                 {
                     var devices = await _services.DeviceRepository.GetAllAsync();
                     _userDeviceIds = new HashSet<int>(
                         devices
                             .Where(d => d.AssignedToUserID == _currentUser.UserID)
-                            .Select(d => d.DeviceID)
-                    );
+                            .Select(d => d.DeviceID));
                 }
                 else
                 {
@@ -102,7 +113,9 @@ namespace TechInventory.ViewModels
 
                 foreach (var ticket in tickets)
                 {
-                    string statusName = statusDict.TryGetValue(ticket.StatusID, out var s) ? s : "?";
+                    // Статус из словаря БД
+                    string statusName = statusDict.TryGetValue(ticket.StatusID, out var s)
+                        ? s : $"Статус {ticket.StatusID}";
 
                     var item = new TicketListItem
                     {
@@ -112,12 +125,19 @@ namespace TechInventory.ViewModels
                         CreatedAt = ticket.CreatedAt.ToString("g"),
                         RoomID = ticket.RoomID,
                         Status = statusName,
-                        Priority = ticket.Priority switch { 1 => "Высокий", 2 => "Средний", 3 => "Низкий", _ => "?" }
+                        Priority = ticket.Priority switch
+                        {
+                            1 => "Высокий",
+                            2 => "Средний",
+                            3 => "Низкий",
+                            _ => "Низкий"
+                        }
                     };
 
                     try
                     {
-                        var device = await _services.DeviceService.GetDeviceByIdAsync(ticket.DeviceID);
+                        var device = await _services.DeviceService
+                            .GetDeviceByIdAsync(ticket.DeviceID);
                         item.DeviceName = device?.Name ?? "?";
                     }
                     catch { item.DeviceName = "?"; }
@@ -126,13 +146,16 @@ namespace TechInventory.ViewModels
                     {
                         try
                         {
-                            var room = await _services.RoomRepository.GetByIdAsync(ticket.RoomID.Value);
+                            var room = await _services.RoomRepository
+                                .GetByIdAsync(ticket.RoomID.Value);
                             item.RoomName = room?.Name ?? "–";
                         }
                         catch { item.RoomName = "–"; }
                     }
                     else
+                    {
                         item.RoomName = "–";
+                    }
 
                     _allTickets.Add(item);
                 }
@@ -142,14 +165,19 @@ namespace TechInventory.ViewModels
                 RoomOptions.Clear();
                 RoomOptions.Add(new RoomFilterItem { RoomID = 0, DisplayName = "Все" });
                 foreach (var r in rooms.OrderBy(r => r.Name))
-                    RoomOptions.Add(new RoomFilterItem { RoomID = r.RoomID, DisplayName = r.Name });
+                    RoomOptions.Add(new RoomFilterItem
+                    {
+                        RoomID = r.RoomID,
+                        DisplayName = r.Name
+                    });
                 SelectedRoomId = 0;
 
                 ApplyFilters();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки заявок: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка загрузки заявок: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -177,19 +205,22 @@ namespace TechInventory.ViewModels
         private async Task CloseSelectedTicket()
         {
             if (SelectedTicket == null) return;
-            var result = MessageBox.Show($"Закрыть заявку #{SelectedTicket.TicketID}?",
+
+            var result = MessageBox.Show(
+                $"Закрыть заявку #{SelectedTicket.TicketID}?",
                 "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
 
             try
             {
                 await _services.TicketService.CloseTicketAsync(SelectedTicket.TicketID);
-                await LoadTicketsAsync();
                 Logger.Log($"Заявка #{SelectedTicket.TicketID} закрыта");
+                await LoadTicketsAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка закрытия заявки: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка закрытия заявки: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

@@ -23,12 +23,15 @@
 ## Скриншоты
 
 ![Главное окно](screenshots/main-window.png)
+
 *Главное окно с деревом и плитками устройств*
 
 ![Карточка устройства](screenshots/device-card.png)
+
 *Детальная карточка устройства*
 
 ![Лента заявок](screenshots/tickets-window.png)
+
 *Лента заявок с фильтрами*
 
 ![Отчёты](screenshots/reports.png)
@@ -82,5 +85,3 @@ TechInventory/                          ← Корень проекта
 ├── icon.png                            # Иконка приложения
 ├── inventory.db                        # База данных
 └── README.md
-
-Дипломный проект — 2026

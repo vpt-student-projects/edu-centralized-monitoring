@@ -32,6 +32,7 @@
 *Лента заявок с фильтрами*
 
 ![Отчёты](screenshots/reports.png)
+
 *Формирование отчётов*
 
 ## Технологический стек
@@ -44,22 +45,27 @@
 - **Дизайн**: Современный Material-стиль
 
 ## Структура проекта
-TechInventory/
-├── Core/                    # Бизнес-логика и модели
+
+```bash
+TechInventory/                          ← Корень проекта
+├── Core/                               # Бизнес-логика и модели
 │   ├── Models/
 │   ├── Interfaces/
 │   ├── Repositories/
 │   └── Services/
-├── TechInventory/           # WPF-приложение
+├── TechInventory/                      # WPF-приложение (основной проект)
 │   ├── Views/
 │   ├── ViewModels/
 │   ├── Helpers/
-│   └── Resources/
-├── Scripts/                 # Python-скрипты для отчётов
-├── Reports/                 # Сгенерированные отчёты
-├── inventory.db             # База данных
+│   ├── Resources/
+│   └── App.xaml
+├── Scripts/                            # Python-скрипты для отчётов
+│   └── report_generator.py
+├── screenshots/                        # Скриншоты для README
+├── Reports/                            # Сгенерированные отчёты
+├── icon.png                            # Иконка приложения
+├── inventory.db                        # База данных
 └── README.md
-text## Установка и запуск
 
 1. Клонируй репозиторий
 2. Убедись, что установлен **.NET 8 SDK**

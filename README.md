@@ -2,7 +2,7 @@
 
 **Десктопное приложение для учёта оборудования и диспетчеризации заявок на ремонт**
 
-![Иконка приложения](C:\Users\taras\Downloads\edu-centralized-monitoring.ico)
+![Иконка приложения](edu-centralized-monitoring.ico)
 
 ## О проекте
 
@@ -67,10 +67,10 @@ text## Установка и запуск
    ```bash
    pip install
    pandas openpyxl
-4.Запусти проект через Visual Studio 2022+
+4. Запусти проект через Visual Studio 2022+
 
 ## Требования
 
--Windows 10 / 11
--.NET 8 Runtime
--Python 3.10+
+- Windows 10 / 11
+- .NET 8 Runtime
+- Python 3.10+

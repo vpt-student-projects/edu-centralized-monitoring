@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/vpt-student-projects/edu-centralized-monitoring/main/TechInventory/techinventory.ico" width="80" height="80" alt="TechInventory Icon"/>
+<img src="C:\Users\taras\Downloads\techinventory.ico" width="80" height="80" alt="TechInventory Icon"/>
 🖥 TechInventory
 Система централизованного мониторинга и управления IT-инфраструктурой образовательного учреждения
 Show Image

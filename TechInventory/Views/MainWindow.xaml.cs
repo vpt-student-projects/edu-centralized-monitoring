@@ -22,7 +22,7 @@ namespace TechInventory.Views
             // Отображаем пользователя в шапке
             CurrentUserName.Text = string.IsNullOrWhiteSpace(currentUser.FullName)
                 ? currentUser.Login
-                : $"{currentUser.FullName} ({currentUser.Login})";
+                : currentUser.FullName;
             CurrentUserRole.Text = currentUser.Role switch
             {
                 "Admin" => "Администратор",

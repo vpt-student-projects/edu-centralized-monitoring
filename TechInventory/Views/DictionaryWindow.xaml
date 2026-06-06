@@ -116,8 +116,6 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Код" DisplayMemberBinding="{Binding ID}" Width="60"/>
-                        <GridViewColumn Header="Категория" DisplayMemberBinding="{Binding Category}" Width="160"/>
                         <GridViewColumn Header="Наименование" DisplayMemberBinding="{Binding Value}" Width="300"/>
                     </GridView>
                 </ListView.View>

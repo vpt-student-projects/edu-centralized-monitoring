@@ -82,6 +82,6 @@ TechInventory/                          ← Корень проекта
 │   └── report_generator.py
 ├── screenshots/                        # Скриншоты для README
 ├── Reports/                            # Сгенерированные отчёты
-├── icon.png                            # Иконка приложения
+├── edu-centralized-monitoring.ico      # Иконка приложения
 ├── inventory.db                        # База данных
 └── README.md

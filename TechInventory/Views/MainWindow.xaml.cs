@@ -19,7 +19,6 @@ namespace TechInventory.Views
             CurrentUser = currentUser;
             DataContext = new MainViewModel(services);
 
-            // Отображаем пользователя в шапке
             CurrentUserName.Text = string.IsNullOrWhiteSpace(currentUser.FullName)
                 ? currentUser.Login
                 : currentUser.FullName;

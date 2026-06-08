@@ -158,6 +158,7 @@ Edu-Centralized-Monitoring/                  ← Корень репозитор
 │   ├── Views/
 │   │   ├── CreateTicketWindow.xaml(.cs)
 │   │   ├── DeviceCardWindow.xaml(.cs)
+│   │   ├── DeviceEditWindow.xaml(.cs)
 │   │   ├── DictionaryWindow.xaml(.cs)
 │   │   ├── LoginWindow.xaml(.cs)
 │   │   ├── MainWindow.xaml(.cs)

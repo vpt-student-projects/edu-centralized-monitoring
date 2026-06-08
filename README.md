@@ -63,7 +63,7 @@
 - .NET 8 Runtime
 - Python 3.10+
 
-## 🧪 Юнит-тесты
+## Юнит-тесты
 
 Проект `TechInventory.Tests` содержит **10 юнит-тестов** на [xUnit](https://xunit.net/) + [Moq](https://github.com/moq/moq4).
 

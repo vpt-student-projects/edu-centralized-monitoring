@@ -1,0 +1,58 @@
+﻿<Window x:Class="TechInventory.Views.DeviceEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавить / изменить устройство"
+        Height="520" Width="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F0F2F5" FontFamily="Segoe UI">
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="Label">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+    </Window.Resources>
+    <Border Background="White" CornerRadius="12" Margin="12" Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Устройство" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,14"/>
+
+            <StackPanel Grid.Row="1" Margin="0,4">
+                <TextBlock Text="Название" Style="{StaticResource Label}"/>
+                <TextBox x:Name="NameBox" Height="36" Padding="10,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Margin="0,4">
+                <TextBlock Text="Тип устройства" Style="{StaticResource Label}"/>
+                <ComboBox x:Name="TypeCombo" Height="36" DisplayMemberPath="Value" SelectedValuePath="ID"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Margin="0,4">
+                <TextBlock Text="Кабинет" Style="{StaticResource Label}"/>
+                <ComboBox x:Name="RoomCombo" Height="36" DisplayMemberPath="Name" SelectedValuePath="RoomID"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" Margin="0,4">
+                <TextBlock Text="Описание (характеристики)" Style="{StaticResource Label}"/>
+                <TextBox x:Name="SpecsBox" Height="60" TextWrapping="Wrap" AcceptsReturn="True" Padding="8"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Content="Отмена" Click="CancelButton_Click" Width="90" Margin="0,0,10,0"
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+                <Button Content="Сохранить" Click="SaveButton_Click" Width="100"
+                        Style="{StaticResource AccentButtonStyle}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

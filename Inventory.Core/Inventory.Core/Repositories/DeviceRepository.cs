@@ -100,6 +100,43 @@ public class DeviceRepository : BaseRepository, IDeviceRepository
         return devices;
     }
 
+    public async Task AddAsync(Device device)
+    {
+        using var conn = CreateConnection();
+        await conn.OpenAsync();
+        using var cmd = new SQLiteCommand(
+            @"INSERT INTO Devices (Name, TypeID, Specs, StatusID, CurrentRoomID, PositionInRoom, AssignedToUserID)
+          VALUES (@name, @type, @specs, @status, @room, @pos, @assigned)", conn);
+
+        cmd.Parameters.AddWithValue("@name", device.Name);
+        cmd.Parameters.AddWithValue("@type", device.TypeID);
+        cmd.Parameters.AddWithValue("@specs", (object?)device.Specs ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@status", device.StatusID);
+        cmd.Parameters.AddWithValue("@room", device.CurrentRoomID);
+        cmd.Parameters.AddWithValue("@pos", (object?)device.PositionInRoom ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@assigned", (object?)device.AssignedToUserID ?? DBNull.Value);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task DeleteAsync(int deviceId)
+    {
+        using var conn = CreateConnection();
+        await conn.OpenAsync();
+        using (var cmd1 = new SQLiteCommand("DELETE FROM Tickets WHERE DeviceID = @id", conn))
+        {
+            cmd1.Parameters.AddWithValue("@id", deviceId);
+            await cmd1.ExecuteNonQueryAsync();
+        }
+        using (var cmd2 = new SQLiteCommand("DELETE FROM MovementHistory WHERE DeviceID = @id", conn))
+        {
+            cmd2.Parameters.AddWithValue("@id", deviceId);
+            await cmd2.ExecuteNonQueryAsync();
+        }
+        using var cmd3 = new SQLiteCommand("DELETE FROM Devices WHERE DeviceID = @id", conn);
+        cmd3.Parameters.AddWithValue("@id", deviceId);
+        await cmd3.ExecuteNonQueryAsync();
+    }
+
     private Device MapDevice(SQLiteDataReader reader)
     {
         return new Device

@@ -35,6 +35,8 @@ namespace TechInventory.Views
                 UsersButton.Visibility = Visibility.Collapsed;
                 RoomsButton.Visibility = Visibility.Collapsed;
                 CreateTicketFromMainButton.Visibility = Visibility.Collapsed;
+                AddDeviceButton.Visibility = Visibility.Collapsed;
+                DeleteDeviceButton.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -48,8 +50,12 @@ namespace TechInventory.Views
         {
             if (sender is FrameworkElement element && element.DataContext is DeviceTileViewModel deviceTile)
             {
-                if (DataContext is MainViewModel vm && vm.OpenDeviceCommand.CanExecute(deviceTile))
-                    vm.OpenDeviceCommand.Execute(deviceTile);
+                if (DataContext is MainViewModel vm)
+                {
+                    vm.SelectedTile = deviceTile;   
+                    if (vm.OpenDeviceCommand.CanExecute(deviceTile))
+                        vm.OpenDeviceCommand.Execute(deviceTile);
+                }
             }
         }
 
@@ -122,6 +128,45 @@ namespace TechInventory.Views
                 var loginWindow = new LoginWindow();
                 loginWindow.Show();
                 this.Close();
+            }
+        }
+        private void AddDeviceButton_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new DeviceEditWindow(
+                _services.RoomRepository,
+                _services.DictionaryRepository,
+                _services.DeviceRepository);
+            window.Owner = this;
+            if (window.ShowDialog() == true)
+            {
+                if (DataContext is MainViewModel vm)
+                    _ = vm.RefreshRoomsAsync();  
+            }
+        }
+
+        private void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm && vm.SelectedRoom != null && vm.SelectedTile != null)
+            {
+                var tile = vm.SelectedTile;
+                if (MessageBox.Show($"Удалить устройство {tile.Name}? Все связанные заявки и перемещения также будут удалены.",
+                    "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _services.DeviceRepository.DeleteAsync(tile.DeviceID).Wait();
+                        vm.SelectedTile = null;
+                        _ = vm.RefreshRoomsAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Сначала выберите кабинет, затем кликните на плитку устройства.", "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }

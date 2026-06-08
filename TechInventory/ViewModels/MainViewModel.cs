@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using TechInventory.Helpers;
 using TechInventory.Views;
+using TechInventory.ViewModels;
 
 namespace TechInventory.ViewModels
 {
@@ -28,6 +29,12 @@ namespace TechInventory.ViewModels
         {
             get => _searchText;
             set { SetProperty(ref _searchText, value); ApplyDeviceFilter(); }
+        }
+        private DeviceTileViewModel? _selectedTile;
+        public DeviceTileViewModel? SelectedTile
+        {
+            get => _selectedTile;
+            set => SetProperty(ref _selectedTile, value);
         }
 
         private List<DeviceTileViewModel> _allDeviceTiles = new();

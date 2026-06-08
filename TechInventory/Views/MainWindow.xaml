@@ -192,6 +192,8 @@
                         <Button Content="📁  Кабинеты" x:Name="RoomsButton" Click="RoomsButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
                         <Button Content="📚  Справочники" Click="DictionaryButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
                         <Button Content="👤  Пользователи" x:Name="UsersButton" Click="UsersButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="🖥  Добавить устройство" x:Name="AddDeviceButton" Click="AddDeviceButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
+                        <Button Content="🗑  Удалить устройство" x:Name="DeleteDeviceButton" Click="DeleteDeviceButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
                         <Button Content="🚪  Выйти" Click="LogoutButton_Click" Style="{StaticResource SidebarButton}" Margin="0,2"/>
                     </StackPanel>
                 </StackPanel>

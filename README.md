@@ -63,25 +63,122 @@
 - .NET 8 Runtime
 - Python 3.10+
 
+## 🧪 Юнит-тесты
+
+Проект `TechInventory.Tests` содержит **10 юнит-тестов** на [xUnit](https://xunit.net/) + [Moq](https://github.com/moq/moq4).
+
+### Запуск
+
+```bash
+dotnet test
+```
+
+### Покрытие
+
+| # | Тест | Компонент | Сценарий |
+|---|---|---|---|
+| 1 | `MoveDeviceAsync_ValidMove` | `DeviceService` | Успешное перемещение — создаётся запись в `MovementHistory`, обновляется `CurrentRoomID` |
+| 2 | `MoveDeviceAsync_SameRoom` | `DeviceService` | Перемещение в тот же кабинет → `BusinessException` |
+| 3 | `MoveDeviceAsync_DeviceNotFound` | `DeviceService` | Устройство не найдено → `BusinessException` |
+| 4 | `UpdateDeviceStatusAsync_ValidDevice` | `DeviceService` | Статус устройства меняется корректно |
+| 5 | `CreateTicketAsync_Valid` | `TicketService` | Заявка создаётся, устройство получает статус «Сломан» |
+| 6 | `CreateTicketAsync_EmptyDescription` | `TicketService` | Пустое описание → `BusinessException` |
+| 7 | `CloseTicketAsync_Valid` | `TicketService` | Заявка закрывается, `ClosedAt` устанавливается, резолюция добавляется |
+| 8 | `CloseTicketAsync_TicketNotFound` | `TicketService` | Заявка не найдена → `BusinessException` |
+| 9 | `CreateTicket_ShouldAddTicketAndUpdateDeviceStatus` | Интеграционный | Создание заявки через реальную БД меняет статус устройства на «Сломан» |
+| 10 | `GetTicketsByRoom_ShouldReturnTicketsForGivenRoom` | Интеграционный | Фильтрация заявок по кабинету возвращает только нужные записи |
+
+### Результаты
+
+![Результаты тестов](screenshots/tests-passed.png)
+
 ## Структура проекта
 
 ```bash
-TechInventory/                          ← Корень проекта
-├── Core/                               # Бизнес-логика и модели
-│   ├── Models/
+Edu-Centralized-Monitoring/                  ← Корень репозитория
+│
+├── Inventory.Core/                          # Серверная часть — бизнес-логика
+│   ├── Common/
+│   │   └── Exceptions/
+│   │       └── BusinessException.cs
+│   ├── Constants/
+│   │   └── TicketStatuses.cs
 │   ├── Interfaces/
+│   │   ├── IDeviceRepository.cs
+│   │   ├── IDeviceService.cs
+│   │   ├── IDictionaryRepository.cs
+│   │   ├── IMovementRepository.cs
+│   │   ├── IRoomRepository.cs
+│   │   ├── ITicketRepository.cs
+│   │   ├── ITicketService.cs
+│   │   └── IUserRepository.cs
+│   ├── Models/
+│   │   ├── Device.cs
+│   │   ├── DictionaryItem.cs
+│   │   ├── MovementHistory.cs
+│   │   ├── Room.cs
+│   │   ├── Ticket.cs
+│   │   └── User.cs
 │   ├── Repositories/
-│   └── Services/
-├── TechInventory/                      # WPF-приложение (основной проект)
-│   ├── Views/
-│   ├── ViewModels/
+│   │   ├── BaseRepository.cs
+│   │   ├── DeviceRepository.cs
+│   │   ├── DictionaryRepository.cs
+│   │   ├── MovementRepository.cs
+│   │   ├── RoomRepository.cs
+│   │   ├── TicketRepository.cs
+│   │   └── UserRepository.cs
+│   ├── Services/
+│   │   ├── DeviceService.cs
+│   │   └── TicketService.cs
+│   ├── AppServices.cs
+│   └── DatabaseMigrator.cs
+│
+├── TechInventory/                           # Клиентская часть — WPF-приложение
 │   ├── Helpers/
-│   ├── Resources/
-│   └── App.xaml
-├── Scripts/                            # Python-скрипты для отчётов
-│   └── report_generator.py
-├── screenshots/                        # Скриншоты для README
-├── Reports/                            # Сгенерированные отчёты
-├── edu-centralized-monitoring.ico      # Иконка приложения
-├── inventory.db                        # База данных
-└── README.md
+│   │   ├── BoolToVisibilityConverter.cs
+│   │   ├── Logger.cs
+│   │   ├── PasswordHasher.cs
+│   │   ├── RelayCommand.cs
+│   │   ├── StatusToColorConverter.cs
+│   │   └── StringToVisibilityConverter.cs
+│   ├── Scripts/
+│   │   └── report_generator.py
+│   ├── ViewModels/
+│   │   ├── BuildingNodeViewModel.cs
+│   │   ├── DeviceCardViewModel.cs
+│   │   ├── DeviceTileViewModel.cs
+│   │   ├── FloorNodeViewModel.cs
+│   │   ├── LoginViewModel.cs
+│   │   ├── MainViewModel.cs
+│   │   ├── RoomNodeViewModel.cs
+│   │   ├── TicketListItem.cs
+│   │   ├── TicketListViewModel.cs
+│   │   ├── TreeNodeViewModel.cs
+│   │   └── ViewModelBase.cs
+│   ├── Views/
+│   │   ├── CreateTicketWindow.xaml(.cs)
+│   │   ├── DeviceCardWindow.xaml(.cs)
+│   │   ├── DictionaryWindow.xaml(.cs)
+│   │   ├── LoginWindow.xaml(.cs)
+│   │   ├── MainWindow.xaml(.cs)
+│   │   ├── MoveDeviceWindow.xaml(.cs)
+│   │   ├── RegisterWindow.xaml(.cs)
+│   │   ├── ReportWindow.xaml(.cs)
+│   │   ├── RoomEditWindow.xaml(.cs)
+│   │   ├── RoomsManagementWindow.xaml(.cs)
+│   │   ├── SelectDeviceWindow.xaml(.cs)
+│   │   ├── TicketsWindow.xaml(.cs)
+│   │   ├── UserEditWindow.xaml(.cs)
+│   │   └── UsersWindow.xaml(.cs)
+│   └── App.xaml(.cs)
+│
+├── TechInventory.Tests/                     # Юнит-тесты (xUnit + Moq)
+│   ├── ServicesTests.cs                     # 8 тестов через моки (DeviceService, TicketService)
+│   ├── ViewModelTests.cs                    # 2 интеграционных теста на реальной БД
+│   └── TestDatabase.cs                      # Вспомогательная in-memory БД для тестов
+│
+├── screenshots/                             # Скриншоты для README
+├── .gitignore
+├── edu-centralized-monitoring.ico           # Иконка приложения
+├── README.md
+└── TechInventory.sln                        # Solution Visual Studio

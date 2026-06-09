@@ -206,21 +206,23 @@ namespace TechInventory.ViewModels
         {
             if (SelectedTicket == null) return;
 
-            var result = MessageBox.Show(
-                $"Закрыть заявку #{SelectedTicket.TicketID}?",
+            // Сохраняем ID, чтобы не потерять его после обнуления SelectedTicket
+            int ticketIdToClose = SelectedTicket.TicketID;
+
+            var result = MessageBox.Show($"Закрыть заявку #{ticketIdToClose}?",
                 "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result != MessageBoxResult.Yes) return;
 
             try
             {
-                await _services.TicketService.CloseTicketAsync(SelectedTicket.TicketID);
-                Logger.Log($"Заявка #{SelectedTicket.TicketID} закрыта");
+                await _services.TicketService.CloseTicketAsync(ticketIdToClose);
+                SelectedTicket = null;
                 await LoadTicketsAsync();
+                Logger.Log($"Заявка #{ticketIdToClose} закрыта");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка закрытия заявки: {ex.Message}",
-                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка закрытия заявки: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

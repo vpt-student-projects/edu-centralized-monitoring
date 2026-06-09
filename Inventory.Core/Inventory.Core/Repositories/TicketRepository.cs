@@ -78,18 +78,13 @@ public class TicketRepository : BaseRepository, ITicketRepository
     {
         using var conn = CreateConnection();
         await conn.OpenAsync();
+
         using var cmd = new SQLiteCommand(@"
-            UPDATE Tickets 
-            SET StatusID = @statusId, 
-                ClosedAt = @closedAt, 
-                Description = @description
-            WHERE TicketID = @id", conn);
+        UPDATE Tickets 
+        SET StatusID = @statusId, Description = @description
+        WHERE TicketID = @id", conn);
 
         cmd.Parameters.AddWithValue("@statusId", ticket.StatusID);
-        cmd.Parameters.AddWithValue("@closedAt",
-            ticket.ClosedAt.HasValue
-                ? (object)ticket.ClosedAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
-                : DBNull.Value);
         cmd.Parameters.AddWithValue("@description", ticket.Description);
         cmd.Parameters.AddWithValue("@id", ticket.TicketID);
         await cmd.ExecuteNonQueryAsync();
